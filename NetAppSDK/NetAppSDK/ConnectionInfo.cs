@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace NetAppSDK
+namespace Apprenda.SaaSGrid.Addons.NetApp
 {
     public class ConnectionInfo
     {

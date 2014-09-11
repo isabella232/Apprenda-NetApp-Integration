@@ -1,0 +1,12 @@
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\bin\Release\GetSystemOntapiVersion.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\bin\Release\GetSystemOntapiVersion.pdb
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\bin\Release\SaaSGrid.API.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\bin\Release\Apprenda.Utils.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\bin\Release\Apprenda.Logging.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\bin\Release\Apprenda.Utils.Ext.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\bin\Release\Apprenda.Configuration.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\bin\Release\SaaSGrid.API.xml
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\bin\Release\Apprenda.Logging.xml
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\obj\Release\NetAppCommands.csprojResolveAssemblyReference.cache
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\obj\Release\GetSystemOntapiVersion.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppCommands\obj\Release\GetSystemOntapiVersion.pdb

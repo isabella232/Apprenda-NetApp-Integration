@@ -1,0 +1,4 @@
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV2\bin\Release\NetAppV2.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV2\bin\Release\NetAppV2.pdb
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV2\obj\Release\NetAppV2.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV2\obj\Release\NetAppV2.pdb
