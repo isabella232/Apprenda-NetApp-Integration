@@ -69,10 +69,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\NetAppCommands\NetAppCommands.csproj">
-      <Project>{5671e275-4552-4a7c-9008-2a9d49f72964}</Project>
-      <Name>NetAppCommands</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NetAppV2\NetAppV2.csproj">
       <Project>{b07453f4-a0dc-4060-bb50-d39820c1e6f6}</Project>
       <Name>NetAppV2</Name>

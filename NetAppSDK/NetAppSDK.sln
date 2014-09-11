@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppSDK", "NetAppSDK\NetA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppV2", "NetAppV2\NetAppV2.csproj", "{B07453F4-A0DC-4060-BB50-D39820C1E6F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppCommands", "..\NetAppCommands\NetAppCommands.csproj", "{5671E275-4552-4A7C-9008-2A9D49F72964}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppV1", "NetAppV1\NetAppV1.csproj", "{5671E275-4552-4A7C-9008-2A9D49F72964}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

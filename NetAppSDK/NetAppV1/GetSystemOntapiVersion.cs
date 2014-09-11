@@ -6,11 +6,11 @@ using System.Management.Automation;
 using NetApp;
 using NetApp.Filer;
 using NetApp.Filer.System;
-using Apprenda.SaaSGrid.Addons.NetApp.v1.Models;
+using Apprenda.SaaSGrid.Addons.NetApp.V1.Models;
 using Apprenda.SaaSGrid.Addons;
 
 // use of this namespace is end of life and will be deprecated in the new release.
-namespace Apprenda.SaaSGrid.Addons.NetApp.v1
+namespace Apprenda.SaaSGrid.Addons.NetApp.V1
 {
     public static class GetSystemOntapiVersionCommand
     {

@@ -1,0 +1,11 @@
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV1\bin\Release\GetSystemOntapiVersion.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV1\bin\Release\GetSystemOntapiVersion.pdb
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV1\bin\Release\SaaSGrid.API.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV1\bin\Release\Apprenda.Utils.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV1\bin\Release\Apprenda.Logging.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV1\bin\Release\Apprenda.Utils.Ext.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV1\bin\Release\Apprenda.Configuration.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV1\bin\Release\SaaSGrid.API.xml
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV1\bin\Release\Apprenda.Logging.xml
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV1\obj\Release\GetSystemOntapiVersion.dll
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppV1\obj\Release\GetSystemOntapiVersion.pdb

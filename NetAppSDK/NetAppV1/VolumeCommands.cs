@@ -7,10 +7,10 @@ using NetApp.Filer;
 using NetApp.Filer.System;
 using NetApp.Filer.Volume;
 using System.Threading.Tasks;
-using Apprenda.SaaSGrid.Addons.NetApp.v1.Models;
+using Apprenda.SaaSGrid.Addons.NetApp.V1.Models;
 using Apprenda.SaaSGrid.Addons;
 
-namespace Apprenda.SaaSGrid.Addons.NetApp.v1
+namespace Apprenda.SaaSGrid.Addons.NetApp.V1
 {
     public class VolumeOptions
     {

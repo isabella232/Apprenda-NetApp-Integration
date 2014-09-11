@@ -9,7 +9,7 @@ using NetApp.Filer.System;
 using System.Net;
 using Apprenda.SaaSGrid.Addons;
 
-namespace Apprenda.SaaSGrid.Addons.NetApp.v1.Models
+namespace Apprenda.SaaSGrid.Addons.NetApp.V1.Models
 {
     public static class NetAppModel
     {

@@ -4,11 +4,9 @@ using System.Linq;
 using Apprenda.SaaSGrid.Addons;
 using System.Threading;
 // deprecated
-using Apprenda.SaaSGrid.Addons.NetApp.v1;
-using Apprenda.SaaSGrid.Addons.NetApp.v1.Models;
+using Apprenda.SaaSGrid.Addons.NetApp.V1;
+using Apprenda.SaaSGrid.Addons.NetApp.V1.Models;
 using Apprenda.SaaSGrid.Addons.NetApp.V2;
-
-
 
 namespace Apprenda.SaaSGrid.Addons.NetApp
 {
