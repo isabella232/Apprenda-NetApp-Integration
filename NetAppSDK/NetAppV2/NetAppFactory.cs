@@ -38,13 +38,26 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
 
         // pragma public methods - these (and their overloads) will be used by the consumers.
 
-        // volume methods
-        public NetAppResponse CreateVolume(Volume v) { return new NetAppResponse(); }
+        // This will create a volume off a given filer.
+        public NetAppResponse CreateVolume(Volume v)
+        { 
+            return new NetAppResponse(); 
+        }
+        // overload, for ease.
         public NetAppResponse CreateVolume(String VolumeName, String AggregateName, String JunctionPath) 
-        { return CreateVolume(new Volume(VolumeName, AggregateName, JunctionPath)); }
-        public NetAppResponse DeleteVolume(Volume v) { return new NetAppResponse(); }
+        { 
+            return CreateVolume(new Volume(VolumeName, AggregateName, JunctionPath)); 
+        }
+        // This will delete a volume off of a given filer.
+        public NetAppResponse DeleteVolume(Volume v) 
+        { 
+            return new NetAppResponse(); 
+        }
+        // overload, for ease.
         public NetAppResponse DeleteVolume(String VolumeName, String AggregateName, String JunctionPath)
-        { return DeleteVolume(new Volume(VolumeName, AggregateName, JunctionPath)); }
+        { 
+            return DeleteVolume(new Volume(VolumeName, AggregateName, JunctionPath)); 
+        }
 
         // aggregate methods
         public NetAppResponse CreateAggregate(Aggregate a) { return new NetAppResponse(); }

@@ -6,6 +6,7 @@ using System.Threading;
 // deprecated
 using Apprenda.SaaSGrid.Addons.NetApp.V1;
 using Apprenda.SaaSGrid.Addons.NetApp.V1.Models;
+// we'll be using this once ready.
 using Apprenda.SaaSGrid.Addons.NetApp.V2;
 
 namespace Apprenda.SaaSGrid.Addons.NetApp

@@ -1,22 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using Apprenda.SaaSGrid.Addons;
+using Apprenda.SaaSGrid.Addons.NetApp.V2.Models;
 
 namespace Apprenda.SaaSGrid.Addons.NetApp
 {
     public class DeveloperOptions
     {
-        public String AccessKey { get; set; }
-        public String SecretAccessKey { get; set; }
+        // i'm going to break this into sections, and then divy those into required and optional groups
+        
+        // General Options
+        // Required
+        public string ProvisioningType { get; set; }
 
+        // For Provisioning / Deprovisioning a NetApp Volume
+        public Volume VolumeToProvision { get; set; } 
+
+        // For Provisioning / Deprovisioning a NetApp Aggregate
+        public Aggregate AggregateToProvision { get; set; }
+
+        // these are deprecated, we'll be getting rid of these once V2 is fully ported.
         public String volumeType { get; set; }
         public String volumeName { get; set; }
-
-        // for flexible disks
         public String containingAggregateName { get; set; }
         public String size { get; set; }
-
-        // for traditional disks
         public long diskcount { get; set; }
         public long disksize { get; set; }
 
@@ -73,6 +80,18 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             throw new ArgumentException(string.Format("The developer option '{0}' was not expected and is not understood.", key));
         }
 
+
+
+
+
+
+
+
+
+
+
+
+        // Deprecated in V2
         public void LoadItemsFromManifest(AddonManifest manifest)
         {
             var manifestProperties = manifest.GetProperties();
