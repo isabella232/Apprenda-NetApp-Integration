@@ -12,7 +12,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2.Models
         public string Name {get; set;}
         public string AggregateName {get; set;}
         public string JunctionPath {get; set;}
-
+        public string Size { get; set; }
 
         // optional parameters for Volume Creation
         public string Comment {get; set;}
@@ -39,5 +39,41 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2.Models
         public string VmAlignSuffic { get; set; }
         public string QosPolicyGroup { get; set; }
         public string Language { get; set; }
+
+        public List<Tuple<String, String>> ToPsArguments()
+        {
+            List<Tuple<String, String>> pList = new List<Tuple<String, String>>();
+            pList.Add(new Tuple<String,String>("Name", Name));
+            pList.Add(new Tuple<String, String>("AggregateName", AggregateName)); 
+            pList.Add(new Tuple<String, String>("JunctionPath", JunctionPath));
+
+            if (Comment != null) pList.Add(new Tuple<string,string>("Comment", Comment));
+            if (AntiVirusOnAccessPolicy != null) pList.Add(new Tuple<string, string>("AntiVirusOnAccessPolicy", AntiVirusOnAccessPolicy));
+            if (ExportPolicy != null) pList.Add(new Tuple<string, string>("ExportPolicy", ExportPolicy));
+            if (FlexCacheCachePolicy != null) pList.Add(new Tuple<string, string>("FlexCacheCachePolicy", FlexCacheCachePolicy));
+            if (FlexCacheFillPolicy != null) pList.Add(new Tuple<string, string>("FlexCacheFillPolicy", FlexCacheFillPolicy));
+            if (FlexCacheOriginVolume != null) pList.Add(new Tuple<string, string>("FlexCacheOriginVolume", FlexCacheOriginVolume));
+            if (GroupId != null) pList.Add(new Tuple<string, string>("GroupId", GroupId.ToString()));
+            if (IndexDirectoryFormat != null) pList.Add(new Tuple<string, string>("IndexDirectoryFormat", IndexDirectoryFormat));
+            if (JunctionActive != null) pList.Add(new Tuple<string, string>("JunctionActive", JunctionActive.ToString()));
+            if (MaxDirectorySize != null) pList.Add(new Tuple<string, string>("Comment", MaxDirectorySize.ToString()));
+            if (NvFailEnabled != null) pList.Add(new Tuple<string, string>("Comment", NvFailEnabled.ToString()));
+            if (SecurityStyle != null) pList.Add(new Tuple<string, string>("Comment", SecurityStyle));
+            if (SnapshotPolicy != null) pList.Add(new Tuple<string, string>("Comment", SnapshotPolicy));
+            if (SpaceReserver != null) pList.Add(new Tuple<string, string>("Comment", SnapshotReserver.ToString());
+            if (State != null) pList.Add(new Tuple<string, string>("Comment", State));
+            if (Type != null) pList.Add(new Tuple<string, string>("Comment", Type));
+            if (UserId != null) pList.Add(new Tuple<string, string>("Comment", UserId.ToString()));
+            if (VserverRoot != null) pList.Add(new Tuple<string, string>("Comment", VserverRoot.ToString()));
+            if (SnapshotReserver != null) pList.Add(new Tuple<string, string>("Comment", SnapshotReserver.ToString()));
+            if (VmAlignSector != null) pList.Add(new Tuple<string, string>("Comment", VmAlignSector.ToString()));
+            if (VmAlignSuffic != null) pList.Add(new Tuple<string, string>("Comment", VmAlignSuffic));
+            if (QosPolicyGroup != null) pList.Add(new Tuple<string, string>("Comment", QosPolicyGroup));
+            if (Language != null) pList.Add(new Tuple<string, string>("Comment", Language));
+
+            return pList;
+        }
     }
+
+    
 }

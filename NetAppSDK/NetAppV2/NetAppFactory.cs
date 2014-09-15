@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Management.Automation;
 using Apprenda.SaaSGrid.Addons.NetApp.V2.Models;
+using System.Collections.ObjectModel;
 
 namespace Apprenda.SaaSGrid.Addons.NetApp.V2
 {
@@ -41,13 +42,20 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
         // This will create a volume off a given filer.
         public NetAppResponse CreateVolume(Volume v)
         { 
-            return new NetAppResponse(); 
+            using (PowerShell PsInstance = PowerShell.Create())
+            {
+                PsInstance.AddScript("PsScripts/VolumeFunctions.ps1");
+                foreach(Tuple<String, String> p in v.ToPsArguments())
+                {
+                    PsInstance.AddParameter(p.Item1, p.Item2);
+                }
+                Collection<PSObject> output = PsInstance.Invoke();
+                // build the NetAppResponse
+                NetAppResponse response = NetAppResponse.ParseOutput(output);
+                return response;
+            }
         }
-        // overload, for ease.
-        public NetAppResponse CreateVolume(String VolumeName, String AggregateName, String JunctionPath) 
-        { 
-            return CreateVolume(new Volume(VolumeName, AggregateName, JunctionPath)); 
-        }
+        
         // This will delete a volume off of a given filer.
         public NetAppResponse DeleteVolume(Volume v) 
         { 
