@@ -39,26 +39,5 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2.Models
         public string VmAlignSuffic { get; set; }
         public string QosPolicyGroup { get; set; }
         public string Language { get; set; }
-
-
-
-        // for all required paths, one constructor. you can add
-        // additional parameters in the curly brackets.
-        public Volume(string _Name, string _AggregateName, string _JunctionPath)
-        {
-            Name = _Name;
-            AggregateName = _AggregateName;
-            JunctionPath = _JunctionPath;
-        }
-
-        // for ease, overload constructor to get AggregateName from model
-        public Volume(string _Name, Aggregate aggr, string _JunctionPath)
-        {
-            Name = _Name;
-            AggregateName = aggr.Name;
-            JunctionPath = _JunctionPath;
-        }
-
-
     }
 }
