@@ -60,7 +60,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2.Models
             if (NvFailEnabled != null) pList.Add(new Tuple<string, string>("Comment", NvFailEnabled.ToString()));
             if (SecurityStyle != null) pList.Add(new Tuple<string, string>("Comment", SecurityStyle));
             if (SnapshotPolicy != null) pList.Add(new Tuple<string, string>("Comment", SnapshotPolicy));
-            if (SpaceReserver != null) pList.Add(new Tuple<string, string>("Comment", SnapshotReserver.ToString());
+            if (SpaceReserver != null) pList.Add(new Tuple<string, string>("Comment", SnapshotReserver.ToString()));
             if (State != null) pList.Add(new Tuple<string, string>("Comment", State));
             if (Type != null) pList.Add(new Tuple<string, string>("Comment", Type));
             if (UserId != null) pList.Add(new Tuple<string, string>("Comment", UserId.ToString()));

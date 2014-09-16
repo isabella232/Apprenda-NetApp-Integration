@@ -64,7 +64,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
         // overload, for ease.
         public NetAppResponse DeleteVolume(String VolumeName, String AggregateName, String JunctionPath)
         { 
-            return DeleteVolume(new Volume(VolumeName, AggregateName, JunctionPath)); 
+            return DeleteVolume(new Volume()); 
         }
 
         // aggregate methods
