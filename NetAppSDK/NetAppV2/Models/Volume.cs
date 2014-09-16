@@ -65,11 +65,11 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2.Models
             if (Type != null) pList.Add(new Tuple<string, string>("Type", Type));
             if (UserId != null) pList.Add(new Tuple<string, string>("UserId", UserId.ToString()));
             if (VserverRoot != null) pList.Add(new Tuple<string, string>("VserverRoot", VserverRoot.ToString()));
-            if (SnapshotReserver != null) pList.Add(new Tuple<string, string>("Snapshj", SnapshotReserver.ToString()));
-            if (VmAlignSector != null) pList.Add(new Tuple<string, string>("Comment", VmAlignSector.ToString()));
-            if (VmAlignSuffic != null) pList.Add(new Tuple<string, string>("Comment", VmAlignSuffic));
-            if (QosPolicyGroup != null) pList.Add(new Tuple<string, string>("Comment", QosPolicyGroup));
-            if (Language != null) pList.Add(new Tuple<string, string>("Comment", Language));
+            if (SnapshotReserver != null) pList.Add(new Tuple<string, string>("SnapshotReserver", SnapshotReserver.ToString()));
+            if (VmAlignSector != null) pList.Add(new Tuple<string, string>("VmAlignSector", VmAlignSector.ToString()));
+            if (VmAlignSuffic != null) pList.Add(new Tuple<string, string>("VmAlignSuffic", VmAlignSuffic));
+            if (QosPolicyGroup != null) pList.Add(new Tuple<string, string>("QosPolicyGroup", QosPolicyGroup));
+            if (Language != null) pList.Add(new Tuple<string, string>("Language", Language));
 
             return pList;
         }

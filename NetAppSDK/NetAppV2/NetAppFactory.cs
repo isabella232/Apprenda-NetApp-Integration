@@ -44,7 +44,9 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
         { 
             using (PowerShell PsInstance = PowerShell.Create())
             {
-                PsInstance.AddScript("PsScripts/VolumeFunctions.ps1");
+                // this will chang to reflect the actual invocation. we're going to 
+                // have to build the command execution based on the volume's properties
+                PsInstance.AddScript("./PsScripts/CreateVolume.ps1");
                 foreach(Tuple<String, String> p in v.ToPsArguments())
                 {
                     PsInstance.AddParameter(p.Item1, p.Item2);
@@ -58,13 +60,21 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
         
         // This will delete a volume off of a given filer.
         public NetAppResponse DeleteVolume(Volume v) 
-        { 
-            return new NetAppResponse(); 
-        }
-        // overload, for ease.
-        public NetAppResponse DeleteVolume(String VolumeName, String AggregateName, String JunctionPath)
-        { 
-            return DeleteVolume(new Volume()); 
+        {
+            using (PowerShell PsInstance = PowerShell.Create())
+            {
+                // this will chang to reflect the actual invocation. we're going to 
+                // have to build the command execution based on the volume's properties
+                PsInstance.AddScript("./PsScripts/DeleteVolume.ps1");
+                foreach (Tuple<String, String> p in v.ToPsArguments())
+                {
+                    PsInstance.AddParameter(p.Item1, p.Item2);
+                }
+                Collection<PSObject> output = PsInstance.Invoke();
+                // build the NetAppResponse
+                NetAppResponse response = NetAppResponse.ParseOutput(output);
+                return response;
+            } 
         }
 
         // aggregate methods

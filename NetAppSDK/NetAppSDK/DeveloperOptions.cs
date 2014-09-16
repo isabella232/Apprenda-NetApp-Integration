@@ -13,6 +13,12 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
         // Required
         public string ProvisioningType { get; set; }
 
+        // these are used to connect to the NetApp Appliance
+        public string VServer { get; set; }
+        public string ClusterMgtEndpoint { get; set; }
+        public string AdminUserName { get; set; }
+        public string AdminPassword { get; set; }
+
         // For Provisioning / Deprovisioning a NetApp Volume
         public Volume VolumeToProvision { get; set; } 
 
@@ -20,12 +26,12 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
         public Aggregate AggregateToProvision { get; set; }
 
         // these are deprecated, we'll be getting rid of these once V2 is fully ported.
-        public String volumeType { get; set; }
-        public String volumeName { get; set; }
-        public String containingAggregateName { get; set; }
-        public String size { get; set; }
-        public long diskcount { get; set; }
-        public long disksize { get; set; }
+        //public String volumeType { get; set; }
+        //public String volumeName { get; set; }
+        //public String containingAggregateName { get; set; }
+        //public String size { get; set; }
+        //public long diskcount { get; set; }
+        //public long disksize { get; set; }
 
         // constructor for volume provisioning
         public DeveloperOptions(string provisioningType)
@@ -340,18 +346,6 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             throw new ArgumentException("Internal Error, provisioning type was invalid.");
         }
 
-
-
-
-
-
-
-
-
-
-
-
-        // Deprecated in V2
         public void LoadItemsFromManifest(AddonManifest manifest)
         {
             var manifestProperties = manifest.GetProperties();
@@ -359,14 +353,17 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             {
                 switch(manifestProperty.Key)
                 {
-                    case("aggregateName"):
-                        containingAggregateName = manifestProperty.Value;
+                    case("VServer"):
+                        VServer = manifestProperty.Value;
                         break;
-                    case("size"):
-                        size = manifestProperty.Value;
+                    case("AdminUserName"):
+                        AdminUserName = manifestProperty.Value;
                         break;
-                    case("volumename"):
-                        volumeName = manifestProperty.Value;
+                    case("AdminPassword"):
+                        AdminPassword = manifestProperty.Value;
+                        break;
+                    case("ClusterMgtEndpoint"):
+                        ClusterMgtEndpoint = manifestProperty.Value;
                         break;
                     default: // means there are other manifest properties we don't need.
                         break;
