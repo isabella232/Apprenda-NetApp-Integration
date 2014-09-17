@@ -26,15 +26,16 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
 
             try
             {
-                NetAppModel.LoadInfoFromManifest(request.Manifest);
-                DeveloperOptions options = DeveloperOptions.Parse(devOptions);
-                // run deprovision here
-                VolumeOptions vo = new VolumeOptions()
-                {
-                    volumeName = options.volumeName
-                };
-                VolumeCommands.RemoveVolume(vo);
-                deprovisionResult.EndUserMessage = "Volume taken offline and removed.";
+                // this loads in the developer options and the manifest parameters
+                // validation will also occur here, so if this fails it will be caught prior to any invocation on the cluster.
+                DeveloperOptions developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
+                developerOptions.LoadItemsFromManifest(request.Manifest);
+                // for assumptions now, create a volume
+                var powershellOutput = NetAppFactory.GetInstance().DeleteVolume(developerOptions.VolumeToProvision);
+                deprovisionResult.IsSuccess = true;
+                deprovisionResult.EndUserMessage = "Volume is provisioned.";
+                deprovisionResult.ConnectionData = NetAppFactory.GetInstance().GetVolumeInfo(developerOptions.VolumeToProvision.Name);
+                
             }
             catch (Exception e)
             {
@@ -52,8 +53,6 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             AddonManifest manifest = request.Manifest;
             try
             {
-
-                NetAppModel.LoadInfoFromManifest(request.Manifest);
                 // this loads in the developer options and the manifest parameters
                 // validation will also occur here, so if this fails it will be caught prior to any invocation on the cluster.
                 DeveloperOptions developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);

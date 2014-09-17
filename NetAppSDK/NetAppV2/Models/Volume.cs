@@ -40,6 +40,19 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2.Models
         public string QosPolicyGroup { get; set; }
         public string Language { get; set; }
 
+        public Volume()
+        {
+            GroupId = -1;
+            UserId = -1;
+            SnapshotReserver = -1;
+            VmAlignSector = -1;
+            MaxDirectorySize = -1;
+            JunctionActive = false;
+            NvFailEnabled = false;
+            VserverRoot = false;
+        }
+
+        // the idea here is to optimize. if the parameters aren't default or null, add them.
         public List<Tuple<String, String>> ToPsArguments()
         {
             List<Tuple<String, String>> pList = new List<Tuple<String, String>>();
@@ -53,20 +66,20 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2.Models
             if (FlexCacheCachePolicy != null) pList.Add(new Tuple<string, string>("FlexCacheCachePolicy", FlexCacheCachePolicy));
             if (FlexCacheFillPolicy != null) pList.Add(new Tuple<string, string>("FlexCacheFillPolicy", FlexCacheFillPolicy));
             if (FlexCacheOriginVolume != null) pList.Add(new Tuple<string, string>("FlexCacheOriginVolume", FlexCacheOriginVolume));
-            if (GroupId != null) pList.Add(new Tuple<string, string>("GroupId", GroupId.ToString()));
+            if (!(GroupId.Equals(-1))) pList.Add(new Tuple<string, string>("GroupId", GroupId.ToString()));
             if (IndexDirectoryFormat != null) pList.Add(new Tuple<string, string>("IndexDirectoryFormat", IndexDirectoryFormat));
-            if (JunctionActive != null) pList.Add(new Tuple<string, string>("JunctionActive", JunctionActive.ToString()));
-            if (MaxDirectorySize != null) pList.Add(new Tuple<string, string>("MaxDirectorySize", MaxDirectorySize.ToString()));
-            if (NvFailEnabled != null) pList.Add(new Tuple<string, string>("NvFailEnabled", NvFailEnabled.ToString()));
+            if (!(JunctionActive == false)) pList.Add(new Tuple<string, string>("JunctionActive", JunctionActive.ToString()));
+            if (!(MaxDirectorySize == -1)) pList.Add(new Tuple<string, string>("MaxDirectorySize", MaxDirectorySize.ToString()));
+            if (!NvFailEnabled == false) pList.Add(new Tuple<string, string>("NvFailEnabled", NvFailEnabled.ToString()));
             if (SecurityStyle != null) pList.Add(new Tuple<string, string>("SecurityStyle", SecurityStyle));
             if (SnapshotPolicy != null) pList.Add(new Tuple<string, string>("SnapshotPolicy", SnapshotPolicy));
             if (SpaceReserver != null) pList.Add(new Tuple<string, string>("SpaceReserver", SnapshotReserver.ToString()));
             if (State != null) pList.Add(new Tuple<string, string>("State", State));
             if (Type != null) pList.Add(new Tuple<string, string>("Type", Type));
-            if (UserId != null) pList.Add(new Tuple<string, string>("UserId", UserId.ToString()));
-            if (VserverRoot != null) pList.Add(new Tuple<string, string>("VserverRoot", VserverRoot.ToString()));
-            if (SnapshotReserver != null) pList.Add(new Tuple<string, string>("SnapshotReserver", SnapshotReserver.ToString()));
-            if (VmAlignSector != null) pList.Add(new Tuple<string, string>("VmAlignSector", VmAlignSector.ToString()));
+            if (!(UserId == -1)) pList.Add(new Tuple<string, string>("UserId", UserId.ToString()));
+            if (VserverRoot != false) pList.Add(new Tuple<string, string>("VserverRoot", VserverRoot.ToString()));
+            if (SnapshotReserver != -1) pList.Add(new Tuple<string, string>("SnapshotReserver", SnapshotReserver.ToString()));
+            if (VmAlignSector != -1) pList.Add(new Tuple<string, string>("VmAlignSector", VmAlignSector.ToString()));
             if (VmAlignSuffic != null) pList.Add(new Tuple<string, string>("VmAlignSuffic", VmAlignSuffic));
             if (QosPolicyGroup != null) pList.Add(new Tuple<string, string>("QosPolicyGroup", QosPolicyGroup));
             if (Language != null) pList.Add(new Tuple<string, string>("Language", Language));

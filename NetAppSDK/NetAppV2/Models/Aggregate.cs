@@ -9,5 +9,10 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2.Models
     public class Aggregate
     {
         public String Name { get; set; }
+
+        internal IEnumerable<Tuple<string, string>> ToPsArguments()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

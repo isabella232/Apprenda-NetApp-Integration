@@ -78,20 +78,50 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
         }
 
         // aggregate methods
-        public NetAppResponse CreateAggregate(Aggregate a) { return new NetAppResponse(); }
-        public NetAppResponse CreateAggregate(String aggregateName) { return CreateAggregate(new Aggregate()); }
-        public NetAppResponse DeleteAggregate(Aggregate a) { return new NetAppResponse(); }
-        public NetAppResponse DeleteAggregate(String aggregateName) { return DeleteAggregate(new Aggregate()); }
-
-        // disk methods
-        public NetAppResponse CreateDisk(Disk a) { return new NetAppResponse(); }
-        public NetAppResponse CreateDisk(String DiskName) { return CreateDisk(new Disk()); }
-        public NetAppResponse DeleteDisk(Disk a) { return new NetAppResponse(); }
-        public NetAppResponse DeleteDisk(String DiskName) { return DeleteDisk(new Disk()); }
-
-
+        // this will create an aggregate on the cluster
+        public NetAppResponse CreateAggregate(Aggregate a) 
+        {
+            using (PowerShell PsInstance = PowerShell.Create())
+            {
+                // this will chang to reflect the actual invocation. we're going to 
+                // have to build the command execution based on the volume's properties
+                PsInstance.AddScript("./PsScripts/CreateAggregate.ps1");
+                foreach (Tuple<String, String> p in a.ToPsArguments())
+                {
+                    PsInstance.AddParameter(p.Item1, p.Item2);
+                }
+                Collection<PSObject> output = PsInstance.Invoke();
+                // build the NetAppResponse
+                NetAppResponse response = NetAppResponse.ParseOutput(output);
+                return response;
+            }
+        }
+        
+        // this will delete the aggregate on the cluster
+        public NetAppResponse DeleteAggregate(Aggregate a) 
+        {
+            using (PowerShell PsInstance = PowerShell.Create())
+            {
+                // this will chang to reflect the actual invocation. we're going to 
+                // have to build the command execution based on the volume's properties
+                PsInstance.AddScript("./PsScripts/DeleteAggregate.ps1");
+                foreach (Tuple<String, String> p in a.ToPsArguments())
+                {
+                    PsInstance.AddParameter(p.Item1, p.Item2);
+                }
+                Collection<PSObject> output = PsInstance.Invoke();
+                // build the NetAppResponse
+                NetAppResponse response = NetAppResponse.ParseOutput(output);
+                return response;
+            }
+        }
 
         public string GetVolumeInfo(string p)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetAggregateInfo(string a)
         {
             throw new NotImplementedException();
         }
