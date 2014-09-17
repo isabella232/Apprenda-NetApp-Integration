@@ -13,14 +13,14 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
 {
     public class Addon : AddonBase
     {
-        // Deprovision RDS Instance
+        // Deprovision NetApp (volume, aggregate)
         // Input: AddonDeprovisionRequest request
         // Output: OperationResult
+
+        // we really do not need the connection data to deprovision a volume or an aggregate
         public override OperationResult Deprovision(AddonDeprovisionRequest request)
         {
-            string connectionData = request.ConnectionData;
-            // changing to overloaded constructor - 5/22/14
-            var deprovisionResult = new ProvisionAddOnResult(connectionData);
+            var deprovisionResult = new ProvisionAddOnResult("");
             AddonManifest manifest = request.Manifest;
             string devOptions = request.DeveloperOptions;
 
@@ -54,20 +54,15 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             {
 
                 NetAppModel.LoadInfoFromManifest(request.Manifest);
-                // run provision here
+                // this loads in the developer options and the manifest parameters
+                // validation will also occur here, so if this fails it will be caught prior to any invocation on the cluster.
                 DeveloperOptions developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
                 developerOptions.LoadItemsFromManifest(request.Manifest);
-                // for this use case, we're going to show just provisioning a flexibile
-                VolumeOptions vo = new VolumeOptions()
-                {
-                    containingAggregateName = developerOptions.containingAggregateName,
-                    size = developerOptions.size,
-                    volumeName = developerOptions.volumeName
-                };
-                VolumeCommands.AddVolume(vo);
+                // for assumptions now, create a volume
+                var powershellOutput = NetAppFactory.GetInstance().CreateVolume(developerOptions.VolumeToProvision);
                 provisionResult.IsSuccess = true;
                 provisionResult.EndUserMessage = "Volume is provisioned.";
-                provisionResult.ConnectionData = NetAppModel.Server;
+                provisionResult.ConnectionData = NetAppFactory.GetInstance().GetVolumeInfo(developerOptions.VolumeToProvision.Name);
             }
             catch (Exception e)
             {

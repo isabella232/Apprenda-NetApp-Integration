@@ -10,7 +10,6 @@ param(
     [string] $size = $(throw "-size is required")
 )
 
-
 # create powershell credential
 $secPassword = ConvertTo-SecureString $password -AsPlainText -Force
 $netappCreds = New-Object System.Management.Automation.PSCredential($username, $secPassword)

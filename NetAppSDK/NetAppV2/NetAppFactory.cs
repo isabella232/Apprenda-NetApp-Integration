@@ -21,7 +21,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
             // exists to defeat instantiation
         }
 
-        public NetAppFactory GetInstance()
+        public static NetAppFactory GetInstance()
         {
             if (_factory == null)
             {
@@ -53,8 +53,8 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
                 }
                 Collection<PSObject> output = PsInstance.Invoke();
                 // build the NetAppResponse
-                NetAppResponse response = NetAppResponse.ParseOutput(output);
-                return response;
+                return NetAppResponse.ParseOutput(output);
+                
             }
         }
         
@@ -90,5 +90,10 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
         public NetAppResponse DeleteDisk(String DiskName) { return DeleteDisk(new Disk()); }
 
 
+
+        public string GetVolumeInfo(string p)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
