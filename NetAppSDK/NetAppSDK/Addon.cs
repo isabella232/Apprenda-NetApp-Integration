@@ -23,6 +23,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             var deprovisionResult = new ProvisionAddOnResult("");
             AddonManifest manifest = request.Manifest;
             string devOptions = request.DeveloperOptions;
+            deprovisionResult.IsSuccess = false;
 
             try
             {
@@ -51,6 +52,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
         {
             var provisionResult = new ProvisionAddOnResult("");
             AddonManifest manifest = request.Manifest;
+            provisionResult.IsSuccess = false;
             try
             {
                 // this loads in the developer options and the manifest parameters
@@ -58,7 +60,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 DeveloperOptions developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
                 developerOptions.LoadItemsFromManifest(request.Manifest);
                 // for assumptions now, create a volume
-                var powershellOutput = NetAppFactory.GetInstance().CreateVolume(developerOptions.VolumeToProvision);
+                var powershellOutput = NetAppFactory.GetInstance().CreateVolume(developerOptions);
                 provisionResult.IsSuccess = true;
                 provisionResult.EndUserMessage = "Volume is provisioned.";
                 provisionResult.ConnectionData = NetAppFactory.GetInstance().GetVolumeInfo(developerOptions.VolumeToProvision.Name);

@@ -51,6 +51,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\WindowsPowerShell\3.0\System.Management.Automation.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,6 +65,11 @@
     <Compile Include="Addon.cs" />
     <Compile Include="ConnectionInfo.cs" />
     <Compile Include="DeveloperOptions.cs" />
+    <Compile Include="Models\Aggregate.cs" />
+    <Compile Include="Models\Disk.cs" />
+    <Compile Include="Models\NetAppResponse.cs" />
+    <Compile Include="Models\Volume.cs" />
+    <Compile Include="NetAppFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -69,14 +78,21 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NetAppV1\NetAppV1.csproj">
+    <ProjectReference Include="..\NetAppV1\NetAppV1 %28Deprecated%29.csproj">
       <Project>{5671e275-4552-4a7c-9008-2a9d49f72964}</Project>
-      <Name>NetAppV1</Name>
+      <Name>NetAppV1 %28Deprecated%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NetAppV2\NetAppV2.csproj">
-      <Project>{b07453f4-a0dc-4060-bb50-d39820c1e6f6}</Project>
-      <Name>NetAppV2</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PsScripts\CreateAggregate.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="PsScripts\CreateVolume.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Components\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -56,9 +56,9 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2.Models
         public List<Tuple<String, String>> ToPsArguments()
         {
             List<Tuple<String, String>> pList = new List<Tuple<String, String>>();
-            pList.Add(new Tuple<String,String>("-Name", Name));
-            pList.Add(new Tuple<String, String>("-AggregateName", AggregateName)); 
-            pList.Add(new Tuple<String, String>("-JunctionPath", JunctionPath));
+            pList.Add(new Tuple<String,String>("-volName", Name));
+            pList.Add(new Tuple<String, String>("-aggregateName", AggregateName)); 
+            pList.Add(new Tuple<String, String>("-junctionPath", JunctionPath));
             pList.Add(new Tuple<String, String>("-Size", Size));
 
             if (Comment != null) pList.Add(new Tuple<string,string>("-Comment", Comment));

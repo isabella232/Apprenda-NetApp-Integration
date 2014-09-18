@@ -48,7 +48,6 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             }
         }
 
-
         // Method takes in a string and parses it into a DeveloperOptions class.
         public static DeveloperOptions Parse(string developerOptions)
         {
@@ -90,17 +89,21 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                                     optionPair));
                         }
                     }
-                    if (optionPairParts.Length == 2)
-                    {
-                        MapToOption(options, optionPairParts[0].Trim().ToLowerInvariant(), optionPairParts[1].Trim());
-                    }
                     else
-                    {
-                        throw new ArgumentException(
-                            string.Format(
-                                "Unable to parse developer options which should be in the form of 'option=value&nextOption=nextValue'. The option '{0}' was not properly constructed",
-                                optionPair));
+                    { 
+                        if (optionPairParts.Length == 2)
+                        {
+                        MapToOption(options, optionPairParts[0].Trim().ToLowerInvariant(), optionPairParts[1].Trim());
+                        }
+                        else
+                        {
+                            throw new ArgumentException(
+                                string.Format(
+                                    "Unable to parse developer options which should be in the form of 'option=value&nextOption=nextValue'. The option '{0}' was not properly constructed",
+                                    optionPair));
+                        }
                     }
+                    count++;
                 }
             }
 
@@ -111,8 +114,10 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
 
         private static string MapProvisioningType(string p1, string p2)
         {
+            Console.WriteLine("Start of break - p1: " + p1 + " p2: " + p2);
             if(p1.Equals(@"provisioningtype"))
             {
+
                 if(p2.Equals("vol"))
                 {
                     return p2;
@@ -121,75 +126,84 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 {
                     return p2;
                 }
+                Console.WriteLine("Couldn't find vol.");
                 return null;
             }
+            Console.WriteLine("Couldn't parse the p1");
             return null;
         }
 
         // Interior method takes in instance of DeveloperOptions (aptly named existingOptions) and maps them to the proper value. In essence, a setter method.
         private static void MapToOption(DeveloperOptions requiredParams, string key, string value)
         {
+            Console.WriteLine("Debug- key: " + key + " value: " + value);
             // Provisioning Type will drive the parsing
             if (requiredParams.ProvisioningType.Equals("vol"))
             {
                 // Begin Required Parameters.
                 // this is called only if the developer wishes to overwrite the platform operator's default aggregate
-                if ("Name".Equals(key))
+                if ("name".Equals(key))
                 {
                     requiredParams.VolumeToProvision.Name = value;
                     return;
                 }
                 // this is called only if the developer requests a different size of storage
-                if ("AggregateName".Equals(key))
+                if ("aggregatename".Equals(key))
                 {
                     requiredParams.VolumeToProvision.AggregateName = value;
                     return;
                 }
                 // REQUIRED: developer must choose a name for the volume.
-                if ("JunctionPath".Equals(key))
+                if ("junctionpath".Equals(key))
                 {
                     requiredParams.VolumeToProvision.JunctionPath = value;
                     return;
                 }
 
+                if ("size".Equals(key))
+                {
+                    requiredParams.VolumeToProvision.Size = value;
+                    return;
+                }
+
                 // Begin Optional Parameters
-                if ("Comment".Equals(key))
+                if ("comment".Equals(key))
                 {
                     requiredParams.VolumeToProvision.Comment = value;
                     return;
                 }
 
-                if ("AntiVirusOnAccessPolicy".Equals(key))
+                if ("antivirusonaccesspolicy".Equals(key))
                 {
                     requiredParams.VolumeToProvision.AntiVirusOnAccessPolicy = value;
                     return;
                 }
 
-                if ("ExportPolicy".Equals(key))
+                if ("exportpolicy".Equals(key))
                 {
                     requiredParams.VolumeToProvision.ExportPolicy = value;
                     return;
                 }
 
-                if ("FlexCacheCachePolicy".Equals(key))
+                if ("flexcachecachepolicy".Equals(key))
                 {
                     requiredParams.VolumeToProvision.FlexCacheCachePolicy = value;
                     return;
                 }
 
-                if ("FlexCacheFillPolicy".Equals(key))
+                if ("flexcachefillpolicy".Equals(key))
                 {
                     requiredParams.VolumeToProvision.FlexCacheFillPolicy = value;
                     return;
                 }
 
-                if ("FlexCacheOriginVolume".Equals(key))
+                if ("flexcacheoriginvolume".Equals(key))
                 {
                     requiredParams.VolumeToProvision.FlexCacheOriginVolume = value;
                     return;
                 }
 
-                if ("GroupId".Equals(key))
+                if ("groupid".Equals(key))
                 {
                     int tmp;
                     if(!(Int32.TryParse(value, out tmp)))
@@ -200,13 +214,13 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                     return;
                 }
 
-                if ("IndexDirectoryFormat".Equals(key))
+                if ("indexdirectoryformat".Equals(key))
                 {
                     requiredParams.VolumeToProvision.IndexDirectoryFormat = value;
                     return;
                 }
 
-                if("JunctionActive".Equals(key))
+                if("junctionactive".Equals(key))
                 {
                     bool tmp;
                     if(!(Boolean.TryParse(value, out tmp)))
@@ -217,7 +231,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                     return;
                 }
 
-                if ("MaxDirectorySize".Equals(key))
+                if ("maxdirectorysize".Equals(key))
                 {
                     double tmp;
                     if (!(Double.TryParse(value, out tmp)))
@@ -228,7 +242,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                     return;
                 }
 
-                if ("NvFailEnabled".Equals(key))
+                if ("nvfailenabled".Equals(key))
                 {
                     bool tmp;
                     if (!(Boolean.TryParse(value, out tmp)))
@@ -239,43 +253,43 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                     return;
                 }
 
-                if ("SecurityStyle".Equals(key))
+                if ("securitystyle".Equals(key))
                 {
                     requiredParams.VolumeToProvision.SecurityStyle = value;
                     return;
                 }
 
-                if ("SnapshotPolicy".Equals(key))
+                if ("snapshotpolicy".Equals(key))
                 {
                     requiredParams.VolumeToProvision.SnapshotPolicy = value;
                     return;
                 }
 
-                if ("SpaceReserver".Equals(key))
+                if ("spacereserver".Equals(key))
                 {
                     requiredParams.VolumeToProvision.SpaceReserver = value;
                     return;
                 }
 
-                if ("State".Equals(key))
+                if ("state".Equals(key))
                 {
                     requiredParams.VolumeToProvision.State = value;
                     return;
                 }
 
-                if ("Type".Equals(key))
+                if ("type".Equals(key))
                 {
                     requiredParams.VolumeToProvision.Type = value;
                     return;
                 }
 
-                if ("UnixPermissions".Equals(key))
+                if ("unixpermissions".Equals(key))
                 {
                     requiredParams.VolumeToProvision.UnixPermissions = value;
                     return;
                 }
 
-                if ("UserId".Equals(key))
+                if ("userid".Equals(key))
                 {
                     Int32 tmp;
                     if (!(Int32.TryParse(value, out tmp)))
@@ -286,7 +300,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                     return;
                 }
 
-                if ("VserverRoot".Equals(key))
+                if ("vserverroot".Equals(key))
                 {
                     bool tmp;
                     if (!(Boolean.TryParse(value, out tmp)))
@@ -297,7 +311,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                     return;
                 }
 
-                if ("SnapshotReserver".Equals(key))
+                if ("snapshotreserver".Equals(key))
                 {
                     Int32 tmp;
                     if (!(Int32.TryParse(value, out tmp)))
@@ -308,7 +322,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                     return;
                 }
 
-                if ("VmAlignSector".Equals(key))
+                if ("vmalignsector".Equals(key))
                 {
                     Int32 tmp;
                     if (!(Int32.TryParse(value, out tmp)))
@@ -319,19 +333,19 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                     return;
                 }
 
-                if ("VmAlignSuffic".Equals(key))
+                if ("vmalignsuffic".Equals(key))
                 {
                     requiredParams.VolumeToProvision.VmAlignSuffic = value;
                     return;
                 }
 
-                if ("QosPolicyGroup".Equals(key))
+                if ("qospolicygroup".Equals(key))
                 {
                     requiredParams.VolumeToProvision.QosPolicyGroup = value;
                     return;
                 }
 
-                if ("Language".Equals(key))
+                if ("language".Equals(key))
                 {
                     requiredParams.VolumeToProvision.Language = value;
                     return;
@@ -351,21 +365,23 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             var manifestProperties = manifest.GetProperties();
             foreach(var manifestProperty in manifestProperties)
             {
-                switch(manifestProperty.Key)
+                Console.WriteLine("Debug- manifestProperty Key: " + manifestProperty.DisplayName + " Value: " + manifestProperty.Value);
+                switch(manifestProperty.DisplayName.Trim().ToLowerInvariant())
                 {
-                    case("VServer"):
+                    case("vserver"):
                         VServer = manifestProperty.Value;
                         break;
-                    case("AdminUserName"):
+                    case("adminusername"):
                         AdminUserName = manifestProperty.Value;
                         break;
-                    case("AdminPassword"):
+                    case("adminpassword"):
                         AdminPassword = manifestProperty.Value;
                         break;
-                    case("ClusterMgtEndpoint"):
+                    case("clustermgtendpoint"):
                         ClusterMgtEndpoint = manifestProperty.Value;
                         break;
                     default: // means there are other manifest properties we don't need.
+                        Console.WriteLine("Parse failed on key: " + manifestProperty.DisplayName);
                         break;
                 }
             }

@@ -45,13 +45,26 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
         { 
             using (PowerShell PsInstance = PowerShell.Create())
             {
+                Console.WriteLine("We are getting here!");
                 // this will chang to reflect the actual invocation. we're going to 
                 // have to build the command execution based on the volume's properties
-                PsInstance.AddScript("./PsScripts/CreateVolume.ps1");
-                foreach(Tuple<String, String> p in v.ToPsArguments())
+
+                String commandBuilder = "./PsScripts/CreateVolume.ps1" + " -username " + d.AdminUserName + " -password " + d.AdminPassword + " -vserver " + d.VServer +
+                    " -endpoint " + d.ClusterMgtEndpoint;
+
+                
+
+                //PsInstance.AddParameter("-username", d.AdminUserName);
+                //PsInstance.AddParameter("-password", d.AdminPassword); 
+                //PsInstance.AddParameter("-vserver", d.VServer);
+                //PsInstance.AddParameter("-endpoint", d.ClusterMgtEndpoint);
+
+                foreach(Tuple<String, String> p in d.VolumeToProvision.ToPsArguments())
                 {
-                    PsInstance.AddParameter(p.Item1, p.Item2);
+                    Console.WriteLine("Debug - p1: " + p.Item1 + " p2: " + p.Item2);
+                    commandBuilder = commandBuilder + " " + p.Item1 + " " + p.Item2;
                 }
+                PsInstance.AddScript(commandBuilder);
                 Collection<PSObject> output = PsInstance.Invoke();
                 // build the NetAppResponse
                 return NetAppResponse.ParseOutput(output);

@@ -1,12 +1,11 @@
+C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\AddonManifest.xml
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\PsScripts\CreateAggregate.ps1
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\PsScripts\CreateVolume.ps1
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\AddonManifest.xml
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\NetAppBatchTests.exe.config
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\NetAppBatchTests.exe
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\NetAppBatchTests.pdb
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\NetAppSDK.dll
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\SaaSGrid.API.dll
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\NetAppV2.dll
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\GetSystemOntapiVersion.dll
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\Apprenda.Utils.dll
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\Apprenda.Logging.dll
@@ -17,7 +16,6 @@ C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\log4net.dll
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\NetAppSDK.pdb
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\SaaSGrid.API.xml
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\NetAppV2.pdb
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\GetSystemOntapiVersion.pdb
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\bin\Release\Apprenda.Logging.xml
 C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\NetAppSDK\NetAppBatchTests\obj\Release\NetAppBatchTests.csprojResolveAssemblyReference.cache

@@ -12,7 +12,7 @@ namespace NetAppBatchTests
     class Program
     {
         public static List<string> developerOptionsTestCases = new List<string>();
-        
+        public static List<ExpectedResults> assertions = new List<ExpectedResults>();
 
         // for now, create a base manifest
         public static AddonManifest addonManifest = new AddonManifest() 
@@ -29,14 +29,28 @@ namespace NetAppBatchTests
 
         public static void LoadDeveloperOptionsTestCases()
         {
-            developerOptionsTestCases.Add("");
+            //developerOptionsTestCases.Add("");
             // these two should fail as not enough information is available
-            developerOptionsTestCases.Add("provisioningType=vol");
-            developerOptionsTestCases.Add("provisioningType=aggr");
+            //developerOptionsTestCases.Add("provisioningType=vol");
+            //developerOptionsTestCases.Add("provisioningType=aggr");
             // these should pass, given a good manifest
             developerOptionsTestCases.Add("provisioningType=vol&name=testvolume1&size=20M&aggregatename=raid4_test&junctionpath=/testvolume1");
         }
 
+        public class ExpectedResults
+        {
+            public bool expectedSuccess {get; set;}
+            public string expectedErrorMessage {get; set;}
+            public string expectedSuccessMessage {get; set;}
+        }
+
+        public static void LoadExpectedResults()
+        {
+            //assertions.Add(new ExpectedResults() { expectedSuccess = false, expectedErrorMessage = "Object reference not set to an instance of an object."});
+            //assertions.Add(new ExpectedResults() { expectedSuccess = false});
+            //assertions.Add(new ExpectedResults() { expectedSuccess = false});
+            assertions.Add(new ExpectedResults() { expectedSuccess = true});
+        }
 
         public static void LoadManifest()
         {
@@ -72,6 +86,7 @@ namespace NetAppBatchTests
             Console.WriteLine("Initializing...");
             LoadManifest();
             LoadDeveloperOptionsTestCases();
+            LoadExpectedResults();
             Console.WriteLine("Complete.");
             int testRun = 0;
             int overallScore = 0;
@@ -80,27 +95,43 @@ namespace NetAppBatchTests
             List<TestExecutionResult> testResults = new List<TestExecutionResult>();
             foreach (string d in developerOptionsTestCases)
             {
-                TestExecutionResult t = ExecuteTest(d, addonManifest);
+                TestExecutionResult t = ExecuteTest(d, addonManifest, assertions[testRun]);
                 testResults.Add(t);
                 testRun++;
                 if (t.ProvisionScore == 100) numberOfPassedTests++; else numberOfFailedTests++;
-                if (t.DeProvisionScore == 100) numberOfPassedTests++; else numberOfFailedTests++;
+                if (t.DeProvisionScore == 100) numberOfPassedTests++; 
+                if (t.DeProvisionScore == 0) numberOfFailedTests++;
 
                 // overall score is the calculation of provisioning and deprovisioning scores
                 // 
-                int testScore = ((t.DeProvisionScore + t.ProvisionScore) / 2);
-                overallScore = (((overallScore * (testRun - 1)) + testScore) / testRun);
+                if (t.DeProvisionScore != -1)
+                {
+                    int testScore = ((t.DeProvisionScore + t.ProvisionScore) / 2);
+                    overallScore = (((overallScore * (testRun - 1)) + testScore) / testRun);
+                }
+                else
+                {
+                    // if we skipped deprov, just get the provisioning score
+                    int testScore = t.ProvisionScore;
+                    overallScore = (((overallScore * (testRun - 1)) + testScore) / testRun);
+                }
                 // we'll do some analytics here.
             }
             Console.WriteLine("*****************Test Run Results***********");
+            foreach(TestExecutionResult t in testResults)
+            {
+                Console.WriteLine("Test Result: " + t.ExecutionResult);
+            }
+            Console.WriteLine("***********Summary**************************");
             Console.WriteLine("Number of Tests Run: " + testRun);
             Console.WriteLine("Overall Score: " + overallScore);
             Console.WriteLine();
             Console.WriteLine("Number of Passed Tests: " + numberOfPassedTests);
             Console.WriteLine("Number of Failed Tests: " + numberOfFailedTests);
+
         }
 
-        public static TestExecutionResult ExecuteTest(string d, AddonManifest m)
+        public static TestExecutionResult ExecuteTest(string d, AddonManifest m, ExpectedResults assertions)
         {
             Addon a = new Addon();
             // test 1 - provision
@@ -110,7 +141,8 @@ namespace NetAppBatchTests
                     Manifest = m
                 });
             var testResult = new TestExecutionResult();
-            if(provisionResult.IsSuccess)
+            // if we got the result we expected, show 100. else 0.
+            if((provisionResult.IsSuccess && assertions.expectedSuccess) || (!provisionResult.IsSuccess && !assertions.expectedSuccess))
             {
                 testResult.ProvisionScore = 100;
             }
@@ -126,11 +158,12 @@ namespace NetAppBatchTests
                         DeveloperOptions = d,
                         Manifest = m
                     });
-                if(deprovisionResult.IsSuccess){  testResult.DeProvisionScore = 100;}
+                if((deprovisionResult.IsSuccess && assertions.expectedSuccess) || (!deprovisionResult.IsSuccess && !assertions.expectedSuccess))
+                {  testResult.DeProvisionScore = 100;}
                 else{   testResult.DeProvisionScore = 0;}
             }
-            else{   // unable to run deprovision test
-                testResult.DeProvisionScore = 0;
+            else{   // unable to run deprovision test, skip (-1)
+                testResult.DeProvisionScore = -1;
             }
             return testResult;
         }
