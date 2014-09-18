@@ -72,25 +72,32 @@ namespace NetAppBatchTests
             Console.WriteLine("Initializing...");
             LoadManifest();
             LoadDeveloperOptionsTestCases();
-            Console.Write("Complete.");
+            Console.WriteLine("Complete.");
             int testRun = 0;
             int overallScore = 0;
             int numberOfPassedTests = 0;
             int numberOfFailedTests = 0;
             List<TestExecutionResult> testResults = new List<TestExecutionResult>();
-            foreach(string d in developerOptionsTestCases)
+            foreach (string d in developerOptionsTestCases)
             {
                 TestExecutionResult t = ExecuteTest(d, addonManifest);
                 testResults.Add(t);
                 testRun++;
                 if (t.ProvisionScore == 100) numberOfPassedTests++; else numberOfFailedTests++;
                 if (t.DeProvisionScore == 100) numberOfPassedTests++; else numberOfFailedTests++;
-                overallScore = (overallScore + (t.ProvisionScore + t.DeProvisionScore / 2) / testRun);
+
+                // overall score is the calculation of provisioning and deprovisioning scores
+                // 
+                int testScore = ((t.DeProvisionScore + t.ProvisionScore) / 2);
+                overallScore = (((overallScore * (testRun - 1)) + testScore) / testRun);
+                // we'll do some analytics here.
             }
-            // we'll do some analytics here.
-            
             Console.WriteLine("*****************Test Run Results***********");
+            Console.WriteLine("Number of Tests Run: " + testRun);
             Console.WriteLine("Overall Score: " + overallScore);
+            Console.WriteLine();
+            Console.WriteLine("Number of Passed Tests: " + numberOfPassedTests);
+            Console.WriteLine("Number of Failed Tests: " + numberOfFailedTests);
         }
 
         public static TestExecutionResult ExecuteTest(string d, AddonManifest m)
@@ -115,23 +122,14 @@ namespace NetAppBatchTests
             // test 2 - deprovision (well, we should only run this is the first test passed)
             if (provisionResult.IsSuccess)
             {
-                var deprovisionResult = a.Deprovision(new AddonDeprovisionRequest()
-                    {
+                var deprovisionResult = a.Deprovision(new AddonDeprovisionRequest(){
                         DeveloperOptions = d,
                         Manifest = m
                     });
-                if(deprovisionResult.IsSuccess)
-                {
-                    testResult.DeProvisionScore = 100;
-                }
-                else
-                {
-                    testResult.DeProvisionScore = 0;
-                }
+                if(deprovisionResult.IsSuccess){  testResult.DeProvisionScore = 100;}
+                else{   testResult.DeProvisionScore = 0;}
             }
-            else
-            {
-                // unable to run deprovision test
+            else{   // unable to run deprovision test
                 testResult.DeProvisionScore = 0;
             }
             return testResult;
