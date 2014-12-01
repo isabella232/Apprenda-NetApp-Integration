@@ -7,7 +7,8 @@ param(
     [string] $volName = $(throw "-volName is required"),
     [string] $aggregateName = $(throw "-aggregateName is required"),
     [string] $junctionPath = $(throw "-junctionPath is required"),
-    [string] $size = $(throw "-size is required")
+    [string] $size = $(throw "-size is required"),
+    [string] $protocol = $(throw "protocol is required")
 )
 
 # create powershell credential
@@ -19,3 +20,14 @@ Connect-NcController -Name $endpoint -Credential $netappCreds -VServer $vserver
 # ok, we should be in
 New-NcVol -Name $volName -Aggregate $aggregateName -Size $size -JunctionPath $junctionpath
 Get-NcVol
+
+# now that we have the volume, let's create the share, based on the options
+if($protocol = "nfs")
+{
+    Add-NcNfsExport -Path $junctionPath  -ReadWrite all-hosts -NoSuid -SecurityFlavors sys
+}
+elseif($protocol = "cifs")
+{
+    Add-NcCifsShare -Name $volName -Path $junctionPath
+}
+

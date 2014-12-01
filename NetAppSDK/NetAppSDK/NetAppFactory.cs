@@ -46,19 +46,10 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
             using (PowerShell PsInstance = PowerShell.Create())
             {
                 Console.WriteLine("We are getting here!");
-                // this will chang to reflect the actual invocation. we're going to 
-                // have to build the command execution based on the volume's properties
-
+                
                 String commandBuilder = "./PsScripts/CreateVolume.ps1" + " -username " + d.AdminUserName + " -password " + d.AdminPassword + " -vserver " + d.VServer +
                     " -endpoint " + d.ClusterMgtEndpoint;
-
                 
-
-                //PsInstance.AddParameter("-username", d.AdminUserName);
-                //PsInstance.AddParameter("-password", d.AdminPassword); 
-                //PsInstance.AddParameter("-vserver", d.VServer);
-                //PsInstance.AddParameter("-endpoint", d.ClusterMgtEndpoint);
-
                 foreach(Tuple<String, String> p in d.VolumeToProvision.ToPsArguments())
                 {
                     Console.WriteLine("Debug - p1: " + p.Item1 + " p2: " + p.Item2);
@@ -68,23 +59,25 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
                 Collection<PSObject> output = PsInstance.Invoke();
                 // build the NetAppResponse
                 return NetAppResponse.ParseOutput(output);
-                
             }
         }
 
         
         // This will delete a volume off of a given filer.
-        public NetAppResponse DeleteVolume(Volume v) 
+        public NetAppResponse DeleteVolume(DeveloperOptions d) 
         {
             using (PowerShell PsInstance = PowerShell.Create())
             {
                 // this will chang to reflect the actual invocation. we're going to 
                 // have to build the command execution based on the volume's properties
-                PsInstance.AddScript("./PsScripts/DeleteVolume.ps1");
-                foreach (Tuple<String, String> p in v.ToPsArguments())
+                String commandBuilder = "./PsScripts/CreateVolume.ps1" + " -username " + d.AdminUserName + " -password " + d.AdminPassword + " -vserver " + d.VServer +
+                " -endpoint " + d.ClusterMgtEndpoint;
+                foreach (Tuple<String, String> p in d.VolumeToProvision.ToPsArguments())
                 {
-                    PsInstance.AddParameter(p.Item1, p.Item2);
+                    commandBuilder += " " + p.Item1 + " " + p.Item2;
                 }
+                PsInstance.AddScript("./PsScripts/DeleteVolume.ps1");
+                
                 Collection<PSObject> output = PsInstance.Invoke();
                 // build the NetAppResponse
                 NetAppResponse response = NetAppResponse.ParseOutput(output);

@@ -7,7 +7,7 @@
     <ProjectGuid>{62B02595-CCEC-45E8-A4D5-CE6FABEC17A0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NetAppSDK</RootNamespace>
+    <RootNamespace>Apprenda.SaaSGrid.Addons.NetApp</RootNamespace>
     <AssemblyName>NetAppSDK</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -51,9 +51,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\WindowsPowerShell\3.0\System.Management.Automation.dll</HintPath>
+    <Reference Include="System.Management.Automation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\System.Management.Automation.6.1.7601.17515\lib\net45\System.Management.Automation.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -70,26 +70,25 @@
     <Compile Include="Models\NetAppResponse.cs" />
     <Compile Include="Models\Volume.cs" />
     <Compile Include="NetAppFactory.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AddonManifest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NetAppV1\NetAppV1 %28Deprecated%29.csproj">
-      <Project>{5671e275-4552-4a7c-9008-2a9d49f72964}</Project>
-      <Name>NetAppV1 %28Deprecated%29</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="packages.config" />
     <None Include="PsScripts\CreateAggregate.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="PsScripts\CreateVolume.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="PsScripts\DeleteAggregate.ps1" />
+    <None Include="PsScripts\DeleteVolume.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />

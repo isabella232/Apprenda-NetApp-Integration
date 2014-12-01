@@ -34,7 +34,7 @@ namespace NetAppBatchTests
             //developerOptionsTestCases.Add("provisioningType=vol");
             //developerOptionsTestCases.Add("provisioningType=aggr");
             // these should pass, given a good manifest
-            developerOptionsTestCases.Add("provisioningType=vol&name=testvolume1&size=20M&aggregatename=raid4_test&junctionpath=/testvolume1");
+            developerOptionsTestCases.Add("provisioningType=vol&name=testvolume1&size=20M&aggregatename=aggr1&junctionpath=/vol/testvolume1");
         }
 
         public class ExpectedResults

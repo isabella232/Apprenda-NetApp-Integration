@@ -15,8 +15,9 @@
                provisioningLocation="">
   <properties>
     <property key="requireDevCredentials" displayName="Require Developer Credentials" description="If set to true, each developer will need to provide their own Amazon credentials, otherwise the default creds will be used to provision RDS instances." value="false"  />
-    <property key="server" displayName="NetApp Endpoint" description="Endpoint to Connect to Data ONTAP" value="192.168.246.69"/>
-    <property key="username" value="admin" description="The account used to login to ONTAP" displayName="Username" />
-    <property key="password" value="cyrixm2r" description="The password associated with the above username" displayName="Password" />
+    <property key="clustermgtendpoint" displayName="NetApp Endpoint" description="Endpoint to Connect to Data ONTAP" value="192.168.233.101"/>
+    <property key="adminusername" value="admin" description="The account used to login to ONTAP" displayName="Admin Username" />
+    <property key="adminpassword" value="cyrixm2r" description="The password associated with the above username" displayName="Admin Password" />
+    <property key="vserver" value="apprendaVServer" description="The VServer Associated with this filer" displayName="VServer"/>
   </properties>
 </addonManifest>

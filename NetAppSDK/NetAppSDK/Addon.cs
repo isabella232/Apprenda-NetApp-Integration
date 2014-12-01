@@ -1,42 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Apprenda.SaaSGrid.Addons.NetApp.V2;
+using System;
 using System.Linq;
-using Apprenda.SaaSGrid.Addons;
-using System.Threading;
-// deprecated
-using Apprenda.SaaSGrid.Addons.NetApp.V1;
-using Apprenda.SaaSGrid.Addons.NetApp.V1.Models;
-// we'll be using this once ready.
-using Apprenda.SaaSGrid.Addons.NetApp.V2;
 
 namespace Apprenda.SaaSGrid.Addons.NetApp
 {
     public class Addon : AddonBase
     {
-        // Deprovision NetApp (volume, aggregate)
+        // Deprovision NetApp
         // Input: AddonDeprovisionRequest request
         // Output: OperationResult
-
-        // we really do not need the connection data to deprovision a volume or an aggregate
         public override OperationResult Deprovision(AddonDeprovisionRequest request)
         {
-            var deprovisionResult = new ProvisionAddOnResult("");
-            AddonManifest manifest = request.Manifest;
-            string devOptions = request.DeveloperOptions;
-            deprovisionResult.IsSuccess = false;
-
+            var deprovisionResult = new OperationResult { IsSuccess = false };
             try
             {
                 // this loads in the developer options and the manifest parameters
                 // validation will also occur here, so if this fails it will be caught prior to any invocation on the cluster.
-                DeveloperOptions developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
+                var developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
                 developerOptions.LoadItemsFromManifest(request.Manifest);
                 // for assumptions now, create a volume
-                var powershellOutput = NetAppFactory.GetInstance().DeleteVolume(developerOptions.VolumeToProvision);
+                NetAppFactory.GetInstance().DeleteVolume(developerOptions);
                 deprovisionResult.IsSuccess = true;
-                deprovisionResult.EndUserMessage = "Volume is provisioned.";
-                deprovisionResult.ConnectionData = NetAppFactory.GetInstance().GetVolumeInfo(developerOptions.VolumeToProvision.Name);
-                
+                deprovisionResult.EndUserMessage = "Volume is deprovisioned.";
             }
             catch (Exception e)
             {
@@ -50,26 +35,24 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
         // Output: ProvisionAddOnResult
         public override ProvisionAddOnResult Provision(AddonProvisionRequest request)
         {
-            var provisionResult = new ProvisionAddOnResult("");
-            AddonManifest manifest = request.Manifest;
-            provisionResult.IsSuccess = false;
+            var provisionResult = new ProvisionAddOnResult("") { IsSuccess = false };
             try
             {
                 // this loads in the developer options and the manifest parameters
                 // validation will also occur here, so if this fails it will be caught prior to any invocation on the cluster.
-                DeveloperOptions developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
+                var developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
                 developerOptions.LoadItemsFromManifest(request.Manifest);
                 // for assumptions now, create a volume
-                var powershellOutput = NetAppFactory.GetInstance().CreateVolume(developerOptions);
+                NetAppFactory.GetInstance().CreateVolume(developerOptions);
                 provisionResult.IsSuccess = true;
                 provisionResult.EndUserMessage = "Volume is provisioned.";
-                provisionResult.ConnectionData = NetAppFactory.GetInstance().GetVolumeInfo(developerOptions.VolumeToProvision.Name);
+                //provisionResult.ConnectionData = developerOptions.VolumeToProvision.Name;
+                // well, it has to return the cifs or nfs share information. so, we'll need a method here.
             }
             catch (Exception e)
             {
-                provisionResult.EndUserMessage = e.Message;
+                provisionResult.EndUserMessage = e.Message + "\n" + e.StackTrace;
             }
-            
             return provisionResult;
         }
 
@@ -78,20 +61,14 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
         // Output: OperationResult
         public override OperationResult Test(AddonTestRequest request)
         {
-            AddonManifest manifest = request.Manifest;
-            string developerOptions = request.DeveloperOptions;
+            var manifest = request.Manifest;
+            var developerOptions = request.DeveloperOptions;
             var testResult = new OperationResult { IsSuccess = false };
             var testProgress = "";
 
             if (manifest.Properties != null && manifest.Properties.Any())
             {
                 DeveloperOptions devOptions;
-
-                testProgress += "Evaluating required manifest properties...\n";
-                if (!ValidateManifest(manifest, out testResult))
-                {
-                    return testResult;
-                }
 
                 var parseOptionsResult = ParseDevOptions(developerOptions, out devOptions);
                 if (!parseOptionsResult.IsSuccess)
@@ -102,35 +79,27 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 try
                 {
                     // load critical info from manifest to connect to netapp filer
-                    NetAppModel.LoadInfoFromManifest(request.Manifest);
-                    // run tests here 
-                    // Test #1 : test api version
-                    var checkAPIResult = GetSystemOntapiVersionCommand.ProcessRecord();
-                    if(!checkAPIResult.IsSuccess)
-                    {
-                        return checkAPIResult;
-                    }
-                    testProgress += checkAPIResult.EndUserMessage;
+                    devOptions.LoadItemsFromManifest(request.Manifest);
 
-                    AddonProvisionRequest apr = new AddonProvisionRequest()
+                    var apr = new AddonProvisionRequest
                     {
                         DeveloperOptions = request.DeveloperOptions,
                         Manifest = request.Manifest
                     };
 
-                    AddonDeprovisionRequest dpr = new AddonDeprovisionRequest()
+                    var dpr = new AddonDeprovisionRequest
                     {
                         DeveloperOptions = request.DeveloperOptions,
                         Manifest = request.Manifest
                     };
                     var provisionTest = Provision(apr);
-                    if(!provisionTest.IsSuccess)
+                    if (!provisionTest.IsSuccess)
                     {
                         return provisionTest;
                     }
                     testProgress += provisionTest.EndUserMessage;
                     var deprovisionTest = Deprovision(dpr);
-                    if(!deprovisionTest.IsSuccess)
+                    if (!deprovisionTest.IsSuccess)
                     {
                         return deprovisionTest;
                     }
@@ -154,45 +123,10 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             return testResult;
         }
 
-        /* Begin private methods */
-
-        private bool ValidateManifest(AddonManifest manifest, out OperationResult testResult)
-        {
-            testResult = new OperationResult();
-
-            var prop =
-                    manifest.Properties.FirstOrDefault(
-                        p => p.Key.Equals("requireDevCredentials", StringComparison.InvariantCultureIgnoreCase));
-
-            if (prop == null || !prop.HasValue)
-            {
-                testResult.IsSuccess = false;
-                testResult.EndUserMessage = "Missing required property 'requireDevCredentials'. This property needs to be provided as part of the manifest";
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(manifest.ProvisioningUsername) ||
-                string.IsNullOrWhiteSpace(manifest.ProvisioningPassword))
-            {
-                testResult.IsSuccess = false;
-                testResult.EndUserMessage = "Missing credentials 'provisioningUsername' & 'provisioningPassword' . These values needs to be provided as part of the manifest";
-                return false;
-            }
-
-            return true;
-        }
-
-        // TODO: We might be able to extend this. 
-        private bool ValidateDevCreds(DeveloperOptions devOptions)
-        {
-            //return !(string.IsNullOrWhiteSpace(devOptions.AccessKey) || string.IsNullOrWhiteSpace(devOptions.SecretAccessKey));
-            return true;
-        }
-
-        private OperationResult ParseDevOptions(string developerOptions, out DeveloperOptions devOptions)
+        private static OperationResult ParseDevOptions(string developerOptions, out DeveloperOptions devOptions)
         {
             devOptions = null;
-            var result = new OperationResult() { IsSuccess = false };
+            var result = new OperationResult { IsSuccess = false };
             var progress = "";
 
             try

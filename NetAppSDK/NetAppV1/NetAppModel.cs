@@ -63,8 +63,8 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V1.Models
             NaFiler server = new NaFiler(Server);
             // for testing purposes
             server.ForceUseUnsecure = true;
-            server.Protocol = ServerProtocol.HTTPS;
-            server.Port = (int)ServerPort.HttpsOntapSecurePort;
+            server.Protocol = ServerProtocol.HTTP;
+            server.Port = (int)ServerPort.HttpOntapUnsecurePort;
             server.Trace = true;
             server.Credentials = new NetworkCredential(User, Password);
             return server;
