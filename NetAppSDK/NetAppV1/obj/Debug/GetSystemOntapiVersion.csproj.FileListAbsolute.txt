@@ -1,9 +1,0 @@
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\Get_SystemOntapiVersion\bin\Debug\GetSystemOntapiVersion.dll
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\Get_SystemOntapiVersion\bin\Debug\GetSystemOntapiVersion.pdb
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\Get_SystemOntapiVersion\bin\Debug\dfm-server-api-6-0.dll
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\Get_SystemOntapiVersion\bin\Debug\log4net.dll
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\Get_SystemOntapiVersion\bin\Debug\netapp-manage.dll
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\Get_SystemOntapiVersion\bin\Debug\ontap-8-2-1.dll
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\Get_SystemOntapiVersion\obj\Debug\GetSystemOntapiVersion.csprojResolveAssemblyReference.cache
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\Get_SystemOntapiVersion\obj\Debug\GetSystemOntapiVersion.dll
-C:\Users\cdutra\Documents\GitHub\Apprenda-NetApp\Get_SystemOntapiVersion\obj\Debug\GetSystemOntapiVersion.pdb
