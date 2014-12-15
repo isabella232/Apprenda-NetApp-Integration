@@ -264,6 +264,13 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 requiredParams.VolumeToProvision.Protocol = value;
             }
 
+            if ("enablesnapmirror".Equals(key))
+            {
+                bool tmp;
+                if (!(bool.TryParse(value, out tmp)))
+                    requiredParams.VolumeToProvision.EnableSnapMirror = tmp;
+                return;
+            }
             throw new ArgumentException(string.Format("The developer option '{0}' was not expected and is not understood.", key));
         }
 
@@ -274,7 +281,6 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 var manifestProperties = manifest.GetProperties();
                 foreach (var manifestProperty in manifestProperties)
                 {
-                    //Console.WriteLine("Debug- manifestProperty Key: " + manifestProperty.DisplayName + " Value: " + manifestProperty.Value);
                     switch (manifestProperty.Key.Trim().ToLowerInvariant())
                     {
                         case ("vserver"):
@@ -297,13 +303,20 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                             VolumeToProvision.Protocol = manifestProperty.Value;
                             break;
 
-                        case ("defaultlifname"):
-                            LifName = manifestProperty.Value;
+                        case ("defaultaggregate"):
+                            VolumeToProvision.AggregateName = manifestProperty.Value;
                             break;
 
                         case ("basejunctionpath"):
                             VolumeToProvision.JunctionPath = manifestProperty.Value;
                             break;
+
+                        case ("snapenable"):
+                            VolumeToProvision.SnapEnable = manifestProperty.Value;
+                            break;
+
+                        case ("defaultacl"):
+                            VolumeToProvision.
 
                         default: // means there are other manifest properties we don't need.
                             Console.WriteLine("Parse failed on key: " + manifestProperty.DisplayName);

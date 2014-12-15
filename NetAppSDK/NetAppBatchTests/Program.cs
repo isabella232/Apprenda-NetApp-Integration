@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Apprenda.SaaSGrid.Addons;
 using Apprenda.SaaSGrid.Addons.NetApp;
-using Apprenda.SaaSGrid.Addons;
 using NetAppBatchTests.Models;
+using System;
+using System.Collections.Generic;
 
 namespace NetAppBatchTests
 {
-    class Program
+    internal class Program
     {
         public static List<string> developerOptionsTestCases = new List<string>();
         public static List<ExpectedResults> assertions = new List<ExpectedResults>();
 
         // for now, create a base manifest
-        public static AddonManifest addonManifest = new AddonManifest() 
-        { 
-            Author = "Chris Dutra", 
-            ProvisioningUsername = "chris@dutronlabs.com", 
+        public static AddonManifest addonManifest = new AddonManifest()
+        {
+            Author = "Chris Dutra",
+            ProvisioningUsername = "chris@dutronlabs.com",
             ProvisioningPassword = "cyrixm2r",
             ProvisioningLocation = "Apprenda-NYC",
             IsEnabled = true,
@@ -34,14 +31,16 @@ namespace NetAppBatchTests
             //developerOptionsTestCases.Add("provisioningType=vol");
             //developerOptionsTestCases.Add("provisioningType=aggr");
             // these should pass, given a good manifest
-            developerOptionsTestCases.Add("provisioningType=vol&name=testvolume1&size=20M&aggregatename=aggr1&junctionpath=/vol/testvolume1");
+            developerOptionsTestCases.Add("name=testvolume1&size=20M");
         }
 
         public class ExpectedResults
         {
-            public bool expectedSuccess {get; set;}
-            public string expectedErrorMessage {get; set;}
-            public string expectedSuccessMessage {get; set;}
+            public bool expectedSuccess { get; set; }
+
+            public string expectedErrorMessage { get; set; }
+
+            public string expectedSuccessMessage { get; set; }
         }
 
         public static void LoadExpectedResults()
@@ -49,13 +48,14 @@ namespace NetAppBatchTests
             //assertions.Add(new ExpectedResults() { expectedSuccess = false, expectedErrorMessage = "Object reference not set to an instance of an object."});
             //assertions.Add(new ExpectedResults() { expectedSuccess = false});
             //assertions.Add(new ExpectedResults() { expectedSuccess = false});
-            assertions.Add(new ExpectedResults() { expectedSuccess = true});
+            assertions.Add(new ExpectedResults() { expectedSuccess = true });
         }
 
         public static void LoadManifest()
         {
             List<AddonProperty> workingManifestProperties = new List<AddonProperty>();
-            workingManifestProperties.Add(new AddonProperty() { 
+            workingManifestProperties.Add(new AddonProperty()
+            {
                 DisplayName = "VServer",
                 Value = "apprenda-svm"
             });
@@ -99,11 +99,11 @@ namespace NetAppBatchTests
                 testResults.Add(t);
                 testRun++;
                 if (t.ProvisionScore == 100) numberOfPassedTests++; else numberOfFailedTests++;
-                if (t.DeProvisionScore == 100) numberOfPassedTests++; 
+                if (t.DeProvisionScore == 100) numberOfPassedTests++;
                 if (t.DeProvisionScore == 0) numberOfFailedTests++;
 
                 // overall score is the calculation of provisioning and deprovisioning scores
-                // 
+                //
                 if (t.DeProvisionScore != -1)
                 {
                     int testScore = ((t.DeProvisionScore + t.ProvisionScore) / 2);
@@ -118,7 +118,7 @@ namespace NetAppBatchTests
                 // we'll do some analytics here.
             }
             Console.WriteLine("*****************Test Run Results***********");
-            foreach(TestExecutionResult t in testResults)
+            foreach (TestExecutionResult t in testResults)
             {
                 Console.WriteLine("Test Result: " + t.ExecutionResult);
             }
@@ -128,7 +128,6 @@ namespace NetAppBatchTests
             Console.WriteLine();
             Console.WriteLine("Number of Passed Tests: " + numberOfPassedTests);
             Console.WriteLine("Number of Failed Tests: " + numberOfFailedTests);
-
         }
 
         public static TestExecutionResult ExecuteTest(string d, AddonManifest m, ExpectedResults assertions)
@@ -142,7 +141,7 @@ namespace NetAppBatchTests
                 });
             var testResult = new TestExecutionResult();
             // if we got the result we expected, show 100. else 0.
-            if((provisionResult.IsSuccess && assertions.expectedSuccess) || (!provisionResult.IsSuccess && !assertions.expectedSuccess))
+            if ((provisionResult.IsSuccess && assertions.expectedSuccess) || (!provisionResult.IsSuccess && !assertions.expectedSuccess))
             {
                 testResult.ProvisionScore = 100;
             }
@@ -154,15 +153,17 @@ namespace NetAppBatchTests
             // test 2 - deprovision (well, we should only run this is the first test passed)
             if (provisionResult.IsSuccess)
             {
-                var deprovisionResult = a.Deprovision(new AddonDeprovisionRequest(){
-                        DeveloperOptions = d,
-                        Manifest = m
-                    });
-                if((deprovisionResult.IsSuccess && assertions.expectedSuccess) || (!deprovisionResult.IsSuccess && !assertions.expectedSuccess))
-                {  testResult.DeProvisionScore = 100;}
-                else{   testResult.DeProvisionScore = 0;}
+                var deprovisionResult = a.Deprovision(new AddonDeprovisionRequest()
+                {
+                    DeveloperOptions = d,
+                    Manifest = m
+                });
+                if ((deprovisionResult.IsSuccess && assertions.expectedSuccess) || (!deprovisionResult.IsSuccess && !assertions.expectedSuccess))
+                { testResult.DeProvisionScore = 100; }
+                else { testResult.DeProvisionScore = 0; }
             }
-            else{   // unable to run deprovision test, skip (-1)
+            else
+            {   // unable to run deprovision test, skip (-1)
                 testResult.DeProvisionScore = -1;
             }
             return testResult;

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Management.Automation;
-using Apprenda.SaaSGrid.Addons.NetApp.V2.Models;
-using Apprenda.SaaSGrid.Addons.NetApp;
+﻿using Apprenda.SaaSGrid.Addons.NetApp.Models;
+using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Management.Automation;
 
-namespace Apprenda.SaaSGrid.Addons.NetApp.V2
+namespace Apprenda.SaaSGrid.Addons.NetApp
 {
     public class NetAppFactory
     {
@@ -41,16 +38,16 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
         // pragma public methods - these (and their overloads) will be used by the consumers.
 
         // This will create a volume off a given filer.
-        public NetAppResponse CreateVolume(DeveloperOptions d)
-        { 
+        public static NetAppResponse CreateVolume(DeveloperOptions d)
+        {
             using (PowerShell PsInstance = PowerShell.Create())
             {
                 Console.WriteLine("We are getting here!");
-                
+
                 String commandBuilder = "./PsScripts/CreateVolume.ps1" + " -username " + d.AdminUserName + " -password " + d.AdminPassword + " -vserver " + d.VServer +
                     " -endpoint " + d.ClusterMgtEndpoint;
-                
-                foreach(Tuple<String, String> p in d.VolumeToProvision.ToPsArguments())
+
+                foreach (Tuple<String, String> p in d.VolumeToProvision.ToPsArguments())
                 {
                     Console.WriteLine("Debug - p1: " + p.Item1 + " p2: " + p.Item2);
                     commandBuilder = commandBuilder + " " + p.Item1 + " " + p.Item2;
@@ -62,76 +59,38 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.V2
             }
         }
 
-        
         // This will delete a volume off of a given filer.
-        public NetAppResponse DeleteVolume(DeveloperOptions d) 
+        public static NetAppResponse DeleteVolume(DeveloperOptions d)
         {
-            using (PowerShell PsInstance = PowerShell.Create())
+            using (var psInstance = PowerShell.Create())
             {
-                // this will chang to reflect the actual invocation. we're going to 
+                // this will chang to reflect the actual invocation. we're going to
                 // have to build the command execution based on the volume's properties
-                String commandBuilder = "./PsScripts/CreateVolume.ps1" + " -username " + d.AdminUserName + " -password " + d.AdminPassword + " -vserver " + d.VServer +
+                var commandBuilder = " -username " + d.AdminUserName + " -password " + d.AdminPassword + " -vserver " + d.VServer +
                 " -endpoint " + d.ClusterMgtEndpoint;
-                foreach (Tuple<String, String> p in d.VolumeToProvision.ToPsArguments())
-                {
-                    commandBuilder += " " + p.Item1 + " " + p.Item2;
-                }
-                PsInstance.AddScript("./PsScripts/DeleteVolume.ps1");
-                
-                Collection<PSObject> output = PsInstance.Invoke();
-                // build the NetAppResponse
-                NetAppResponse response = NetAppResponse.ParseOutput(output);
-                return response;
-            } 
-        }
-
-        // aggregate methods
-        // this will create an aggregate on the cluster
-        public NetAppResponse CreateAggregate(Aggregate a) 
-        {
-            using (PowerShell PsInstance = PowerShell.Create())
-            {
-                // this will chang to reflect the actual invocation. we're going to 
-                // have to build the command execution based on the volume's properties
-                PsInstance.AddScript("./PsScripts/CreateAggregate.ps1");
-                foreach (Tuple<String, String> p in a.ToPsArguments())
-                {
-                    PsInstance.AddParameter(p.Item1, p.Item2);
-                }
-                Collection<PSObject> output = PsInstance.Invoke();
-                // build the NetAppResponse
-                NetAppResponse response = NetAppResponse.ParseOutput(output);
-                return response;
-            }
-        }
-        
-        // this will delete the aggregate on the cluster
-        public NetAppResponse DeleteAggregate(Aggregate a) 
-        {
-            using (PowerShell PsInstance = PowerShell.Create())
-            {
-                // this will chang to reflect the actual invocation. we're going to 
-                // have to build the command execution based on the volume's properties
-                PsInstance.AddScript("./PsScripts/DeleteAggregate.ps1");
-                foreach (Tuple<String, String> p in a.ToPsArguments())
-                {
-                    PsInstance.AddParameter(p.Item1, p.Item2);
-                }
-                Collection<PSObject> output = PsInstance.Invoke();
+                var psArguments = d.VolumeToProvision.ToPsArguments();
+                if (psArguments != null) commandBuilder = psArguments.Aggregate(commandBuilder, (current, p) => current + (" " + p.Item1 + " " + p.Item2));
+                psInstance.AddScript("./PsScripts/DeleteVolume.ps1");
+                psInstance.AddArgument(commandBuilder);
+                Collection<PSObject> output = psInstance.Invoke();
                 // build the NetAppResponse
                 NetAppResponse response = NetAppResponse.ParseOutput(output);
                 return response;
             }
         }
 
-        public string GetVolumeInfo(string p)
+        // int would be the error code that comes back. need to do a better job of error handling
+        internal static int CreateSnapMirror(DeveloperOptions developerOptions)
         {
-            throw new NotImplementedException();
+            // TODO
+            return 0;
         }
 
-        public string GetAggregateInfo(string a)
+        // int would be the error code that comes back. need to do a better job of error handling
+        internal static int CreateSnapVault(DeveloperOptions developerOptions)
         {
-            throw new NotImplementedException();
+            //TODO
+            return 0;
         }
     }
 }

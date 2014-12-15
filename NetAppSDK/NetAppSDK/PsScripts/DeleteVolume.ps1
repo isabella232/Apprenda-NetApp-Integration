@@ -5,8 +5,6 @@ param(
     [string] $endpoint = $(throw "-endpoint is required"),
     [string] $volName = $(throw "-volName is required")
 )
-
-
 # create powershell credential
 $secPassword = ConvertTo-SecureString $password -AsPlainText -Force
 $netappCreds = New-Object System.Management.Automation.PSCredential($username, $secPassword)

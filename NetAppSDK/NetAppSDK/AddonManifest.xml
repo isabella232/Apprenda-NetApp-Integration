@@ -14,11 +14,13 @@
                provisioningPassword="cyrixm2r"
                provisioningLocation="">
   <properties>
-    <property key="requireDevCredentials" displayName="Require Developer Credentials" description="If set to true, each developer will need to provide their own Amazon credentials, otherwise the default creds will be used to provision RDS instances." value="false"  />
-    <property key="clustermgtendpoint" displayName="NetApp Endpoint" description="Endpoint to Connect to Data ONTAP" value="192.168.233.101"/>
+    <property key="requireDevCredentials" displayName="Require Developer Credentials" description="If set to true, each developer will need to provide their own Amazon credentials, otherwise the default creds will be used to provision RDS instances." value="false" />
+    <property key="clustermgtendpoint" displayName="NetApp Endpoint" description="Endpoint to Connect to Data ONTAP" value="192.168.233.101" />
     <property key="adminusername" value="admin" description="The account used to login to ONTAP" displayName="Admin Username" />
     <property key="adminpassword" value="cyrixm2r" description="The password associated with the above username" displayName="Admin Password" />
-    <property key="vserver" value="apprendaVServer" description="The VServer Associated with this filer" displayName="VServer"/>
-    <property key="defaultprotocol" description="The default protocol for accessing data. Values can be NFS, CIFS" displayName="Default Protocol" value=""/>
+    <property key="vserver" value="apprendaVServer" description="The VServer Associated with this filer" displayName="VServer" />
+    <property key="defaultprotocol" description="The default protocol for accessing data. Values can be NFS, CIFS" displayName="Default Protocol" value="" />
+    <property key="defaultaggregate" description="The default aggregate for creating volumes. Can be overridden for advanced users." displayName="Default Aggregate" value="" />
+    <property key="snapenable" description="To turn on SnapMirror, SnapVault, or both." displayName="Enable SnapMirror and/or SnapVault" value="" />
   </properties>
 </addonManifest>

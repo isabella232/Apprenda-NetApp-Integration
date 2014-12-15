@@ -28,14 +28,17 @@ namespace Apprenda.SaaSGrid.Extensions.NetApp
             // if we are promoting to sandbox - which means its coming from definition
             if (proposedStage.Equals(2))
             {
+                // load test data from snapshot into sandbox - especially if we have it from a previous version.
             }
             // if we are promoting to published - which means its coming from sandbox
             if (proposedStage.Equals(3))
             {
+                // we might not want to snap data here from sandbox to production
             }
             // if we are promoting to archive - which means its coming from production
             if (proposedStage.Equals(4))
             {
+                // create a snapshot that saves the production data for the new version
             }
         }
 

@@ -19,7 +19,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 var developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
                 developerOptions.LoadItemsFromManifest(request.Manifest);
                 // for assumptions now, create a volume
-                NetAppFactory.GetInstance().DeleteVolume(developerOptions);
+                NetAppFactory.DeleteVolume(developerOptions);
                 deprovisionResult.IsSuccess = true;
                 deprovisionResult.EndUserMessage = "Volume is deprovisioned.";
             }
@@ -43,7 +43,12 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 var developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
                 developerOptions.LoadItemsFromManifest(request.Manifest);
                 // for assumptions now, create a volume
-                NetAppFactory.GetInstance().CreateVolume(developerOptions);
+                NetAppFactory.CreateVolume(developerOptions);
+
+                if (developerOptions.VolumeToProvision.EnableSnapMirror)
+                {
+                    NetAppFactory.GetInstance().CreateSnapMirror(developerOptions);
+                }
                 provisionResult.IsSuccess = true;
                 provisionResult.EndUserMessage = "Volume is provisioned.";
                 //provisionResult.ConnectionData = developerOptions.VolumeToProvision.Name;

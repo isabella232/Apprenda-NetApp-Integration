@@ -7,15 +7,20 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.Models
 {
     public class Volume
     {
-        // required parameters for Volume Creation
+        // required parameters for Volume Creation from the developer
         internal string Name { get; set; }
 
-        internal string AggregateName { private get; set; }
+        internal string Size { get; set; }
 
         // we're going to do this at the manifest level. platform operator should set the default junciton path
         internal string JunctionPath { private get; set; }
 
-        internal string Size { private get; set; }
+        internal string AggregateName { private get; set; }
+
+        internal string Protocol { private get; set; }
+
+        // could be "Snap", "Vault", "Both"
+        internal string SnapEnable { get; set; }
 
         // optional parameters for Volume Creation
         internal string Comment { private get; set; }
@@ -66,8 +71,6 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.Models
 
         internal string UnixPermissions { private get; set; }
 
-        internal string Protocol { private get; set; }
-
         // the idea here is to optimize. if the parameters aren't default or null, add them.
         [CanBeNull]
         public IEnumerable<Tuple<string, string>> ToPsArguments()
@@ -104,6 +107,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.Models
             if (Language != null) pList.Add(new Tuple<string, string>("-Language", Language));
             if (Protocol != null) pList.Add(new Tuple<string, string>("-Protocol", Protocol));
             if (UnixPermissions != null) pList.Add(new Tuple<string, string>("-UnixPermissions", UnixPermissions));
+            if (EnableSnapMirror) pList.Add(new Tuple<string, string>("-EnableSnapMirror", EnableSnapMirror.ToString()));
             return pList;
         }
     }
