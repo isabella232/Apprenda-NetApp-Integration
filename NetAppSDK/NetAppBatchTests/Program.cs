@@ -1,18 +1,16 @@
-﻿using Apprenda.SaaSGrid.Addons;
-using Apprenda.SaaSGrid.Addons.NetApp;
-using NetAppBatchTests.Models;
-using System;
+﻿using System;
+using Apprenda.SaaSGrid.Addons;
 using System.Collections.Generic;
+using Apprenda.SaaSGrid.Addons.NetApp;
+using Apprenda.SaaSGrid.Addons.NetApp.Annotations;
 
 namespace NetAppBatchTests
 {
     internal class Program
     {
-        public static List<string> developerOptionsTestCases = new List<string>();
-        public static List<ExpectedResults> assertions = new List<ExpectedResults>();
-
+        public static List<string> DeveloperOptionsTestCases = new List<string>();
         // for now, create a base manifest
-        public static AddonManifest addonManifest = new AddonManifest()
+        public static AddonManifest AddonManifest = new AddonManifest()
         {
             Author = "Chris Dutra",
             ProvisioningUsername = "chris@dutronlabs.com",
@@ -21,152 +19,44 @@ namespace NetAppBatchTests
             IsEnabled = true,
             Version = "2.0",
             Vendor = "Apprenda",
-            Name = "NetApp"
+            Name = "NetApp",
+            Properties = new List<AddonProperty>()
         };
 
-        public static void LoadDeveloperOptionsTestCases()
+        public static void Main([NotNull] string[] args)
         {
-            //developerOptionsTestCases.Add("");
-            // these two should fail as not enough information is available
-            //developerOptionsTestCases.Add("provisioningType=vol");
-            //developerOptionsTestCases.Add("provisioningType=aggr");
-            // these should pass, given a good manifest
-            developerOptionsTestCases.Add("name=testvolume1&size=20M");
-        }
-
-        public class ExpectedResults
-        {
-            public bool expectedSuccess { get; set; }
-
-            public string expectedErrorMessage { get; set; }
-
-            public string expectedSuccessMessage { get; set; }
-        }
-
-        public static void LoadExpectedResults()
-        {
-            //assertions.Add(new ExpectedResults() { expectedSuccess = false, expectedErrorMessage = "Object reference not set to an instance of an object."});
-            //assertions.Add(new ExpectedResults() { expectedSuccess = false});
-            //assertions.Add(new ExpectedResults() { expectedSuccess = false});
-            assertions.Add(new ExpectedResults() { expectedSuccess = true });
-        }
-
-        public static void LoadManifest()
-        {
-            List<AddonProperty> workingManifestProperties = new List<AddonProperty>();
-            workingManifestProperties.Add(new AddonProperty()
+            AddonManifest.Properties.Add(new AddonProperty{Key="clustermgtendpoint", Value="10.5.4.150"});
+            AddonManifest.Properties.Add(new AddonProperty{Key="shareendpoint", Value="10.5.4.152"});
+            AddonManifest.Properties.Add(new AddonProperty { Key = "adminusername", Value = "admin" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "adminpassword", Value = "HQ@N3t@pp!" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "vserver", Value = "apprendaVServer" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "defaultprotocol", Value = "CIFS" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "defaultaggregate", Value = "aggr1" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "defaultRootPath", Value = "/vol" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snapenable", Value = "true" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "vaultenable", Value = "true" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snapvaultschedule", Value = "weekly" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snapmirrorschedule", Value = "hourly" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snapvaultpolicyname", Value = "default" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snapmirrorpolicyname", Value = "default" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snaptype", Value = "ls"});
+            try
             {
-                DisplayName = "VServer",
-                Value = "apprenda-svm"
-            });
-            workingManifestProperties.Add(new AddonProperty()
-            {
-                DisplayName = "AdminUserName",
-                Value = "admin"
-            });
-            workingManifestProperties.Add(new AddonProperty()
-            {
-                DisplayName = "AdminPassword",
-                Value = "cyrixm2r"
-            });
-            workingManifestProperties.Add(new AddonProperty()
-            {
-                DisplayName = "ClusterMgtEndpoint",
-                Value = "192.168.233.101"
-            });
-
-            addonManifest.Properties = workingManifestProperties;
-        }
-
-        // this class is used for automated testing. we'll run the console on the command line to
-        // conduct testing for each use case
-
-        public static void Main(string[] args)
-        {
-            Console.WriteLine("Initializing...");
-            LoadManifest();
-            LoadDeveloperOptionsTestCases();
-            LoadExpectedResults();
-            Console.WriteLine("Complete.");
-            int testRun = 0;
-            int overallScore = 0;
-            int numberOfPassedTests = 0;
-            int numberOfFailedTests = 0;
-            List<TestExecutionResult> testResults = new List<TestExecutionResult>();
-            foreach (string d in developerOptionsTestCases)
-            {
-                TestExecutionResult t = ExecuteTest(d, addonManifest, assertions[testRun]);
-                testResults.Add(t);
-                testRun++;
-                if (t.ProvisionScore == 100) numberOfPassedTests++; else numberOfFailedTests++;
-                if (t.DeProvisionScore == 100) numberOfPassedTests++;
-                if (t.DeProvisionScore == 0) numberOfFailedTests++;
-
-                // overall score is the calculation of provisioning and deprovisioning scores
-                //
-                if (t.DeProvisionScore != -1)
+                var addon = new NetAppAddon();
+                var prequest = new AddonProvisionRequest()
                 {
-                    int testScore = ((t.DeProvisionScore + t.ProvisionScore) / 2);
-                    overallScore = (((overallScore * (testRun - 1)) + testScore) / testRun);
-                }
-                else
-                {
-                    // if we skipped deprov, just get the provisioning score
-                    int testScore = t.ProvisionScore;
-                    overallScore = (((overallScore * (testRun - 1)) + testScore) / testRun);
-                }
-                // we'll do some analytics here.
-            }
-            Console.WriteLine("*****************Test Run Results***********");
-            foreach (TestExecutionResult t in testResults)
-            {
-                Console.WriteLine("Test Result: " + t.ExecutionResult);
-            }
-            Console.WriteLine("***********Summary**************************");
-            Console.WriteLine("Number of Tests Run: " + testRun);
-            Console.WriteLine("Overall Score: " + overallScore);
-            Console.WriteLine();
-            Console.WriteLine("Number of Passed Tests: " + numberOfPassedTests);
-            Console.WriteLine("Number of Failed Tests: " + numberOfFailedTests);
-        }
+                    DeveloperOptions = "name=netappdemo02&size=20M",
+                    Manifest = AddonManifest
+                };
+                var result = addon.Provision(prequest);
+                Console.Out.Write(result.ToString());
 
-        public static TestExecutionResult ExecuteTest(string d, AddonManifest m, ExpectedResults assertions)
-        {
-            Addon a = new Addon();
-            // test 1 - provision
-            var provisionResult = a.Provision(new AddonProvisionRequest()
-                {
-                    DeveloperOptions = d,
-                    Manifest = m
-                });
-            var testResult = new TestExecutionResult();
-            // if we got the result we expected, show 100. else 0.
-            if ((provisionResult.IsSuccess && assertions.expectedSuccess) || (!provisionResult.IsSuccess && !assertions.expectedSuccess))
+            }
+            catch (Exception e)
             {
-                testResult.ProvisionScore = 100;
+                Console.Out.Write(e);
             }
-            else
-            {
-                testResult.ProvisionScore = 0;
-            }
-            testResult.ExecutionResult = provisionResult.EndUserMessage + "\n Connection Data: " + provisionResult.ConnectionData;
-            // test 2 - deprovision (well, we should only run this is the first test passed)
-            if (provisionResult.IsSuccess)
-            {
-                var deprovisionResult = a.Deprovision(new AddonDeprovisionRequest()
-                {
-                    DeveloperOptions = d,
-                    Manifest = m
-                });
-                if ((deprovisionResult.IsSuccess && assertions.expectedSuccess) || (!deprovisionResult.IsSuccess && !assertions.expectedSuccess))
-                { testResult.DeProvisionScore = 100; }
-                else { testResult.DeProvisionScore = 0; }
-            }
-            else
-            {   // unable to run deprovision test, skip (-1)
-                testResult.DeProvisionScore = -1;
-            }
-            return testResult;
+            
         }
     }
 }

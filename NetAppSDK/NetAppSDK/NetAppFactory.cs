@@ -1,61 +1,64 @@
-﻿using Apprenda.SaaSGrid.Addons.NetApp.Models;
+﻿using Apprenda.SaaSGrid.Addons.NetApp.Annotations;
+using Apprenda.SaaSGrid.Addons.NetApp.Models;
 using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 
 namespace Apprenda.SaaSGrid.Addons.NetApp
 {
-    public class NetAppFactory
+    public static class NetAppFactory
     {
-        // pragma properties
-        private static NetAppFactory _factory;
-
-        // pragma constructors
-
-        private NetAppFactory()
-        {
-            // exists to defeat instantiation
-        }
-
-        public static NetAppFactory GetInstance()
-        {
-            if (_factory == null)
-            {
-                _factory = new NetAppFactory();
-                _factory.init();
-                return _factory;
-            }
-            else return _factory;
-        }
-
-        private void init()
-        {
-            // create a powershell connection to be reused for each command
-        }
-
-        // pragma public methods - these (and their overloads) will be used by the consumers.
+        /* I've removed the Singleton Component here. All methods will be invoked statically.
+         */
 
         // This will create a volume off a given filer.
-        public static NetAppResponse CreateVolume(DeveloperOptions d)
+        [NotNull]
+        public static NetAppResponse CreateVolume([NotNull] DeveloperOptions d)
         {
-            using (PowerShell PsInstance = PowerShell.Create())
+            try
             {
-                Console.WriteLine("We are getting here!");
-
-                String commandBuilder = "./PsScripts/CreateVolume.ps1" + " -username " + d.AdminUserName + " -password " + d.AdminPassword + " -vserver " + d.VServer +
-                    " -endpoint " + d.ClusterMgtEndpoint;
-
-                foreach (Tuple<String, String> p in d.VolumeToProvision.ToPsArguments())
+                using (var psInstance = PowerShell.Create())
                 {
-                    Console.WriteLine("Debug - p1: " + p.Item1 + " p2: " + p.Item2);
-                    commandBuilder = commandBuilder + " " + p.Item1 + " " + p.Item2;
+                    Console.WriteLine("We are getting here!");
+
+                    var commandBuilder = "./PsScripts/CreateVolume.ps1" + " -username " + d.AdminUserName +
+                                         " -password " +
+                                         d.AdminPassword + " -vserver " + d.VServer +
+                                         " -endpoint " + d.ClusterMgtEndpoint;
+                    var psArguments = d.VolumeToProvision.ToPsArguments();
+                    if (psArguments != null)
+                        foreach (var p in psArguments)
+                        {
+                            Console.WriteLine("Debug - p1: " + p.Item1 + " p2: " + p.Item2);
+                            commandBuilder = commandBuilder + " " + p.Item1 + " " + p.Item2;
+                        }
+                    psInstance.AddScript(commandBuilder);
+                    var output = psInstance.Invoke();
+                    var debugStream = "";
+                    var errorStream = "";
+                    if (psInstance.Streams.Error.Count <= 0)
+                        return new NetAppResponse()
+                        {
+                            ConnectionData = d.VolumeToProvision.Name,
+                            IsSuccess = true,
+                            ReturnCode = 0,
+                            ConsoleOut = output.ToString()
+                        };
+                    errorStream = psInstance.Streams.Error.Aggregate(errorStream, (current, error) => current + error);
+                    debugStream = psInstance.Streams.Progress.Aggregate(debugStream, (current, debug) => current + debug);
+                    return new NetAppResponse()
+                    {
+                        IsSuccess = false,
+                        ReturnCode = 1,
+                        ConsoleOut = debugStream,
+                        ErrorOut = errorStream
+                    };
                 }
-                PsInstance.AddScript(commandBuilder);
-                Collection<PSObject> output = PsInstance.Invoke();
-                // build the NetAppResponse
-                return NetAppResponse.ParseOutput(output);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.ToString());
             }
         }
 
@@ -66,31 +69,71 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             {
                 // this will chang to reflect the actual invocation. we're going to
                 // have to build the command execution based on the volume's properties
-                var commandBuilder = " -username " + d.AdminUserName + " -password " + d.AdminPassword + " -vserver " + d.VServer +
-                " -endpoint " + d.ClusterMgtEndpoint;
+                var commandBuilder = "./PsScripts/DeleteVolume.ps1" + " -username " + d.AdminUserName + " -password " +
+                                     d.AdminPassword + " -vserver " + d.VServer +
+                                     " -endpoint " + d.ClusterMgtEndpoint;
                 var psArguments = d.VolumeToProvision.ToPsArguments();
-                if (psArguments != null) commandBuilder = psArguments.Aggregate(commandBuilder, (current, p) => current + (" " + p.Item1 + " " + p.Item2));
-                psInstance.AddScript("./PsScripts/DeleteVolume.ps1");
+                if (psArguments != null)
+                    commandBuilder = psArguments.Aggregate(commandBuilder,
+                        (current, p) => current + (" " + p.Item1 + " " + p.Item2));
+                psInstance.AddScript(commandBuilder);
                 psInstance.AddArgument(commandBuilder);
-                Collection<PSObject> output = psInstance.Invoke();
+                var output = psInstance.Invoke();
                 // build the NetAppResponse
-                NetAppResponse response = NetAppResponse.ParseOutput(output);
-                return response;
+                return new NetAppResponse() { IsSuccess = true, ReturnCode = 0, ConsoleOut = output.ToString() };
             }
         }
 
-        // int would be the error code that comes back. need to do a better job of error handling
-        internal static int CreateSnapMirror(DeveloperOptions developerOptions)
+        private static NetAppResponse ProcessPsOutput([NotNull] IEnumerable<PSObject> output, PowerShell psInstance, Volume volume)
         {
-            // TODO
-            return 0;
-        }
+            if (output == null) throw new ArgumentNullException("output");
+            var netappResponse = new NetAppResponse
+            {
+                ErrorOut = psInstance.Streams.Error.ReadAll().ToString(),
+                ConsoleOut = output.ToString()
+            };
 
-        // int would be the error code that comes back. need to do a better job of error handling
-        internal static int CreateSnapVault(DeveloperOptions developerOptions)
-        {
-            //TODO
-            return 0;
+            foreach (var outputItem in output)
+            {
+                if (outputItem != null && outputItem.BaseObject.GetType().IsPrimitive)
+                {
+                    int returnCode;
+                    int.TryParse(outputItem.BaseObject.ToString(), out returnCode);
+
+                    if (returnCode > 1) // failed
+                    {
+                        netappResponse.IsSuccess = false;
+                        netappResponse.ReturnCode = 2;
+                    }
+                    else switch (returnCode)
+                        {
+                            case 1:
+                                // ok, check errors.
+                                netappResponse.IsSuccess = true;
+                                break;
+
+                            case 0:
+                                // good.
+                                netappResponse.IsSuccess = true;
+                                break;
+
+                            default:
+                                // no-op
+                                netappResponse.IsSuccess = false;
+                                break;
+                        }
+                }
+                // we'll only find this IF a) we're adding an instance AND b) it worked.
+                else if (outputItem != null && (outputItem.BaseObject is string) && outputItem.BaseObject.ToString().Contains("Connection Data: "))
+                {
+                    var temp = outputItem.BaseObject.ToString();
+                    // do some string manipulation and get the connection data back.
+                    netappResponse.ConnectionData = temp.Substring(17);
+                }
+
+                netappResponse.ConnectionData = volume.Name;
+            }
+            return netappResponse;
         }
     }
 }

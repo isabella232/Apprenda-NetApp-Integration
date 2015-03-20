@@ -1,10 +1,9 @@
-﻿using Apprenda.SaaSGrid.Addons.NetApp.V2;
-using System;
+﻿using System;
 using System.Linq;
 
 namespace Apprenda.SaaSGrid.Addons.NetApp
 {
-    public class Addon : AddonBase
+    public class NetAppAddon : AddonBase
     {
         // Deprovision NetApp
         // Input: AddonDeprovisionRequest request
@@ -19,9 +18,9 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 var developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
                 developerOptions.LoadItemsFromManifest(request.Manifest);
                 // for assumptions now, create a volume
-                NetAppFactory.DeleteVolume(developerOptions);
-                deprovisionResult.IsSuccess = true;
-                deprovisionResult.EndUserMessage = "Volume is deprovisioned.";
+                var netappresponse = NetAppFactory.DeleteVolume(developerOptions);
+                // use the class's conversion method.
+                return netappresponse.ToOperationResult();
             }
             catch (Exception e)
             {
@@ -43,19 +42,16 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 var developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
                 developerOptions.LoadItemsFromManifest(request.Manifest);
                 // for assumptions now, create a volume
-                NetAppFactory.CreateVolume(developerOptions);
-
-                if (developerOptions.VolumeToProvision.EnableSnapMirror)
-                {
-                    NetAppFactory.GetInstance().CreateSnapMirror(developerOptions);
-                }
+                // we're handling snapmirror at the factory level
+                var netappresponse = NetAppFactory.CreateVolume(developerOptions);
+                provisionResult = netappresponse.ToAddOnResult();
                 provisionResult.IsSuccess = true;
-                provisionResult.EndUserMessage = "Volume is provisioned.";
-                //provisionResult.ConnectionData = developerOptions.VolumeToProvision.Name;
+                provisionResult.ConnectionData = developerOptions.VolumeToProvision.BuildConnectionString();
                 // well, it has to return the cifs or nfs share information. so, we'll need a method here.
             }
             catch (Exception e)
             {
+                provisionResult.IsSuccess = false;
                 provisionResult.EndUserMessage = e.Message + "\n" + e.StackTrace;
             }
             return provisionResult;
@@ -109,9 +105,6 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                         return deprovisionTest;
                     }
                     testProgress += deprovisionTest.EndUserMessage;
-
-                    // if we are good, bring back a success!
-
                     testResult.IsSuccess = true;
                     testResult.EndUserMessage = testProgress;
                 }

@@ -19,10 +19,19 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.Models
 
         internal string Protocol { private get; set; }
 
-        // could be "Snap", "Vault", "Both"
-        internal string SnapEnable { get; set; }
+        internal bool SnapEnable { private get; set; }
 
-        // optional parameters for Volume Creation
+        internal string SnapType { private get; set; }
+
+        internal string SnapMirrorPolicyName { private get; set; }
+
+        internal string SnapVaultPolicyName { private get; set; }
+
+        internal string SnapMirrorSchedule { private get; set; }
+
+        internal string SnapVaultSchedule { private get; set; }
+
+    // optional parameters for Volume Creation
         internal string Comment { private get; set; }
 
         internal string AntiVirusOnAccessPolicy { private get; set; }
@@ -47,7 +56,9 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.Models
 
         internal string SecurityStyle { private get; set; }
 
-        internal string SnapshotPolicy { private get; set; }
+        internal string SnapshotPolicy { get; set; }
+
+        internal string SnapshotSchedule { get; set; }
 
         internal string SpaceReserver { private get; set; }
 
@@ -71,7 +82,24 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.Models
 
         internal string UnixPermissions { private get; set; }
 
+        internal string CIFSRootServer { private get; set; }
+
         // the idea here is to optimize. if the parameters aren't default or null, add them.
+
+        internal string BuildConnectionString()
+        {
+            // if CIFS, return the share path
+            if (JunctionPath.Contains("/"))
+            {
+                return "//" + CIFSRootServer + JunctionPath + "/" + Name;
+            }
+            else
+            {
+                return "//" + CIFSRootServer + "/" + JunctionPath + "/" + Name;
+            }
+        }
+
+
         [CanBeNull]
         public IEnumerable<Tuple<string, string>> ToPsArguments()
         {
@@ -90,7 +118,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.Models
             if (FlexCacheOriginVolume != null) pList.Add(new Tuple<string, string>("-FlexCacheOriginVolume", FlexCacheOriginVolume));
             if (!((-1).Equals(GroupId))) pList.Add(new Tuple<string, string>("-GroupId", GroupId.ToString(CultureInfo.InvariantCulture)));
             if (IndexDirectoryFormat != null) pList.Add(new Tuple<string, string>("-IndexDirectoryFormat", IndexDirectoryFormat));
-            if (JunctionActive) pList.Add(new Tuple<string, string>("-JunctionActive", JunctionActive.ToString()));
+            if (JunctionActive) pList.Add(new Tuple<string, string>("-JunctionActive", "$true"));
             if (!(Math.Abs(MaxDirectorySize - (-1)) < 0)) pList.Add(new Tuple<string, string>("-MaxDirectorySize", MaxDirectorySize.ToString(CultureInfo.InvariantCulture)));
             if (!NvFailEnabled == false) pList.Add(new Tuple<string, string>("-NvFailEnabled", NvFailEnabled.ToString()));
             if (SecurityStyle != null) pList.Add(new Tuple<string, string>("-SecurityStyle", SecurityStyle));
@@ -99,7 +127,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.Models
             if (State != null) pList.Add(new Tuple<string, string>("-State", State));
             if (Type != null) pList.Add(new Tuple<string, string>("-Type", Type));
             if (UserId != -1) pList.Add(new Tuple<string, string>("-UserId", UserId.ToString(CultureInfo.InvariantCulture)));
-            if (VserverRoot) pList.Add(new Tuple<string, string>("-VserverRoot", VserverRoot.ToString()));
+            if (VserverRoot) pList.Add(new Tuple<string, string>("-VserverRoot", "$true"));
             if (SnapshotReserver != -1) pList.Add(new Tuple<string, string>("-SnapshotReserver", SnapshotReserver.ToString(CultureInfo.InvariantCulture)));
             if (VmAlignSector != -1) pList.Add(new Tuple<string, string>("-VmAlignSector", VmAlignSector.ToString(CultureInfo.InvariantCulture)));
             if (VmAlignSuffic != null) pList.Add(new Tuple<string, string>("-VmAlignSuffic", VmAlignSuffic));
@@ -107,7 +135,12 @@ namespace Apprenda.SaaSGrid.Addons.NetApp.Models
             if (Language != null) pList.Add(new Tuple<string, string>("-Language", Language));
             if (Protocol != null) pList.Add(new Tuple<string, string>("-Protocol", Protocol));
             if (UnixPermissions != null) pList.Add(new Tuple<string, string>("-UnixPermissions", UnixPermissions));
-            if (EnableSnapMirror) pList.Add(new Tuple<string, string>("-EnableSnapMirror", EnableSnapMirror.ToString()));
+            if (SnapEnable) pList.Add(new Tuple<string, string>("-EnableSnapMirror", "$true"));
+            if (SnapMirrorPolicyName != null) pList.Add(new Tuple<string, string>("-snapmirrorpolicyname", SnapMirrorPolicyName));
+            if (SnapVaultPolicyName != null) pList.Add(new Tuple<string, string>("-snapvaultpolicyname", SnapVaultPolicyName));
+            if (SnapMirrorSchedule != null) pList.Add(new Tuple<string, string>("-snapmirrorschedule", SnapMirrorSchedule));
+            if (SnapVaultSchedule != null) pList.Add(new Tuple<string, string>("-snapvaultschedule", SnapVaultSchedule));
+            if (SnapType != null) pList.Add(new Tuple<string, string>("-snaptype", SnapType));
             return pList;
         }
     }

@@ -21,6 +21,8 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
         // For Provisioning / Deprovisioning a NetApp Volume
         public Volume VolumeToProvision { get; private set; }
 
+        public string VolumeAcl { get; set; }
+
         public string AdminPassword { get; private set; }
 
         // handled on a policy-basis via the manifest
@@ -47,7 +49,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                             optionPair));
                 }
             }
-            // validate that we have the required parameters -- TODO
+            // validate that we have the required parameters -- TODO (phase II)
             return options;
         }
 
@@ -264,13 +266,6 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 requiredParams.VolumeToProvision.Protocol = value;
             }
 
-            if ("enablesnapmirror".Equals(key))
-            {
-                bool tmp;
-                if (!(bool.TryParse(value, out tmp)))
-                    requiredParams.VolumeToProvision.EnableSnapMirror = tmp;
-                return;
-            }
             throw new ArgumentException(string.Format("The developer option '{0}' was not expected and is not understood.", key));
         }
 
@@ -307,16 +302,50 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                             VolumeToProvision.AggregateName = manifestProperty.Value;
                             break;
 
-                        case ("basejunctionpath"):
+                        case ("defaultrootpath"):
                             VolumeToProvision.JunctionPath = manifestProperty.Value;
                             break;
 
                         case ("snapenable"):
-                            VolumeToProvision.SnapEnable = manifestProperty.Value;
+                            bool test;
+                            bool.TryParse(manifestProperty.Value, out test);
+                            VolumeToProvision.SnapEnable = test;
+                            break;
+
+                        case ("snapshotschedule"):
+                            VolumeToProvision.SnapshotSchedule = manifestProperty.Value;
                             break;
 
                         case ("defaultacl"):
-                            VolumeToProvision.
+                            VolumeAcl = manifestProperty.Value;
+                            break;
+
+                        case ("snapmirrorpolicyname"):
+                            VolumeToProvision.SnapMirrorPolicyName = manifestProperty.Value;
+                            break;
+
+                        case ("snapvaultpolicyname"):
+                            VolumeToProvision.SnapVaultPolicyName = manifestProperty.Value;
+                            break;
+
+                        case ("snapmirrorschedule"):
+                            VolumeToProvision.SnapMirrorSchedule = manifestProperty.Value;
+                            break;
+
+                        case ("snapvaultschedule"):
+                            VolumeToProvision.SnapVaultSchedule = manifestProperty.Value;
+                            break;
+
+                        case ("snaptype"):
+                            VolumeToProvision.SnapType = manifestProperty.Value;
+                            break;
+
+                        case ("shareendpoint"):
+                            VolumeToProvision.CIFSRootServer = manifestProperty.Value;
+                            break;
+
+                        // don't worry about this for now
+                        //case ("destinationVServer"):
 
                         default: // means there are other manifest properties we don't need.
                             Console.WriteLine("Parse failed on key: " + manifestProperty.DisplayName);

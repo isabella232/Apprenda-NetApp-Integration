@@ -58,9 +58,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NetAppSDK\NetAppSDK.csproj">
+    <ProjectReference Include="..\NetAppSDK\NetAppVolumeAddon.csproj">
       <Project>{62b02595-ccec-45e8-a4d5-ce6fabec17a0}</Project>
-      <Name>NetAppSDK</Name>
+      <Name>NetAppVolumeAddon</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Apprenda.SaaSGrid.Addons.NetApp</RootNamespace>
-    <AssemblyName>NetAppSDK</AssemblyName>
+    <AssemblyName>NetAppVolumeAddon</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -62,7 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Addon.cs" />
+    <Compile Include="NetAppAddon.cs" />
     <Compile Include="DeveloperOptions.cs" />
     <Compile Include="Models\NetAppResponse.cs" />
     <Compile Include="Models\Volume.cs" />
@@ -78,11 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="PsScripts\CreateSnapMirror.ps1" />
     <None Include="PsScripts\CreateVolume.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="PsScripts\DeleteSnapMirror.ps1" />
     <None Include="PsScripts\DeleteVolume.ps1" />
   </ItemGroup>
   <ItemGroup>
