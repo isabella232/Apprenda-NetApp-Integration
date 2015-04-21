@@ -6,11 +6,10 @@ using Apprenda.SaaSGrid.Addons.NetApp.Annotations;
 
 namespace NetAppBatchTests
 {
-    internal class Program
+    internal static class Program
     {
-        public static List<string> DeveloperOptionsTestCases = new List<string>();
         // for now, create a base manifest
-        public static AddonManifest AddonManifest = new AddonManifest()
+        private static readonly AddonManifest AddonManifest = new AddonManifest
         {
             Author = "Chris Dutra",
             ProvisioningUsername = "chris@dutronlabs.com",
@@ -40,16 +39,17 @@ namespace NetAppBatchTests
             AddonManifest.Properties.Add(new AddonProperty { Key = "snapvaultpolicyname", Value = "default" });
             AddonManifest.Properties.Add(new AddonProperty { Key = "snapmirrorpolicyname", Value = "default" });
             AddonManifest.Properties.Add(new AddonProperty { Key = "snaptype", Value = "ls"});
+            AddonManifest.Properties.Add(new AddonProperty { Key = "netappscriptrepo", Value="https://s3.amazonaws.com/apprenda.netapp.scripts/"});
             try
             {
                 var addon = new NetAppAddon();
-                var prequest = new AddonProvisionRequest()
+                var prequest = new AddonProvisionRequest
                 {
-                    DeveloperOptions = "name=netappdemo02&size=20M",
+                    DeveloperOptions = "name=netappdemoFullPathTest&size=20M",
                     Manifest = AddonManifest
                 };
                 var result = addon.Provision(prequest);
-                Console.Out.Write(result.ToString());
+                Console.Out.Write(result.ConnectionData);
 
             }
             catch (Exception e)

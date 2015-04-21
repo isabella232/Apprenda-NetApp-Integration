@@ -81,7 +81,9 @@
     <None Include="PsScripts\CreateVolume.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="PsScripts\DeleteVolume.ps1" />
+    <None Include="PsScripts\DeleteVolume.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />

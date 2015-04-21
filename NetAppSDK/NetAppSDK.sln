@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppBatchTests", "NetAppB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnapExtension", "SnapExtension\SnapExtension.csproj", "{F5048F30-FF29-40C5-8067-CE698217A8DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppContainerAddon", "NetAppContainerAddon\NetAppContainerAddon.csproj", "{06711F16-0F73-4416-A0D0-C8DB5A832E1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppContainerExtension", "NetAppContainerExtension\NetAppContainerExtension.csproj", "{C7B05DCC-2031-4452-89F5-3E92A3872A42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{F5048F30-FF29-40C5-8067-CE698217A8DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5048F30-FF29-40C5-8067-CE698217A8DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5048F30-FF29-40C5-8067-CE698217A8DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06711F16-0F73-4416-A0D0-C8DB5A832E1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06711F16-0F73-4416-A0D0-C8DB5A832E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06711F16-0F73-4416-A0D0-C8DB5A832E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06711F16-0F73-4416-A0D0-C8DB5A832E1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7B05DCC-2031-4452-89F5-3E92A3872A42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7B05DCC-2031-4452-89F5-3E92A3872A42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7B05DCC-2031-4452-89F5-3E92A3872A42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7B05DCC-2031-4452-89F5-3E92A3872A42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

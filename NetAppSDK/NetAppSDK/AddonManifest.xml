@@ -30,5 +30,6 @@
     <property key="snapvaultpolicyname" displayName="SnapVault Policy" description="Policy to use when creating SnapVault" value="default" />
     <property key="snapmirrorpolicyname" displayName="SnapMirror Policy" description="Policy to use when creating SnapMirror" value="default" />
     <property key="shareendpoint" displayName="ShareEndpoint" description="Endpoint used to access shares" value=""/>
+    <property key="scriptrepo" displayName="Script Repository" description="Repository for managing the powershell scripts, allowing for modular development." value="https://s3.amazonaws.com/apprenda.netapp.scripts/"/>
   </properties>
 </addonManifest>

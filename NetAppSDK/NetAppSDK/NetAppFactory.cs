@@ -1,4 +1,5 @@
-﻿using Apprenda.SaaSGrid.Addons.NetApp.Annotations;
+﻿using System.IO;
+using Apprenda.SaaSGrid.Addons.NetApp.Annotations;
 using Apprenda.SaaSGrid.Addons.NetApp.Models;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,6 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
 {
     public static class NetAppFactory
     {
-        /* I've removed the Singleton Component here. All methods will be invoked statically.
-         */
-
         // This will create a volume off a given filer.
         [NotNull]
         public static NetAppResponse CreateVolume([NotNull] DeveloperOptions d)
@@ -21,8 +19,8 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 using (var psInstance = PowerShell.Create())
                 {
                     Console.WriteLine("We are getting here!");
-
-                    var commandBuilder = "./PsScripts/CreateVolume.ps1" + " -username " + d.AdminUserName +
+                    var ps1File = Path.GetFullPath("./PsScripts/CreateVolume.ps1");
+                    var commandBuilder = ps1File + " -username " + d.AdminUserName +
                                          " -password " +
                                          d.AdminPassword + " -vserver " + d.VServer +
                                          " -endpoint " + d.ClusterMgtEndpoint;

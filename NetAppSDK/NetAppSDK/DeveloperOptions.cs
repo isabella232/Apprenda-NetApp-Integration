@@ -10,7 +10,9 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
         {
             VolumeToProvision = volumeToProvision;
         }
-
+        // modularizing the script repository
+        public string NetappScriptRepo { get; set; }
+        
         // these are used to connect to the NetApp Appliance
         public string VServer { get; private set; }
 
@@ -344,6 +346,10 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                             VolumeToProvision.CIFSRootServer = manifestProperty.Value;
                             break;
 
+                        case ("netappscriptrepo"):
+                            NetappScriptRepo = manifestProperty.Value;
+                            break;
+
                         // don't worry about this for now
                         //case ("destinationVServer"):
 
@@ -358,5 +364,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 throw new Exception(e.Message + "\n Debug information: " + manifest.GetProperties());
             }
         }
+
+        
     }
 }
