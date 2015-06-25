@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Apprenda.SaaSGrid.Addons.NetApp
 {
@@ -10,15 +9,14 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
         // Output: OperationResult
         public override OperationResult Deprovision(AddonDeprovisionRequest request)
         {
-            var deprovisionResult = new OperationResult { IsSuccess = false };
+            var deprovisionResult = new OperationResult {IsSuccess = false};
             try
             {
                 // this loads in the developer options and the manifest parameters
                 // validation will also occur here, so if this fails it will be caught prior to any invocation on the cluster.
-                var developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
-                developerOptions.LoadItemsFromManifest(request.Manifest);
-                // for assumptions now, create a volume
-                var netappresponse = NetAppFactory.DeleteVolume(developerOptions);
+                var developerOptions = DeveloperParameters.Parse(request.DeveloperParameters, request.Manifest);
+                // for assumptions now, delete a volume
+                var netappresponse = NetAppFactory.DeleteVolume(developerOptions, request.ConnectionData);
                 // use the class's conversion method.
                 return netappresponse.ToOperationResult();
             }
@@ -34,20 +32,15 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
         // Output: ProvisionAddOnResult
         public override ProvisionAddOnResult Provision(AddonProvisionRequest request)
         {
-            var provisionResult = new ProvisionAddOnResult("") { IsSuccess = false };
+            var provisionResult = new ProvisionAddOnResult("") {IsSuccess = false};
             try
             {
-                // this loads in the developer options and the manifest parameters
-                // validation will also occur here, so if this fails it will be caught prior to any invocation on the cluster.
-                var developerOptions = DeveloperOptions.Parse(request.DeveloperOptions);
-                developerOptions.LoadItemsFromManifest(request.Manifest);
-                // for assumptions now, create a volume
-                // we're handling snapmirror at the factory level
-                var netappresponse = NetAppFactory.CreateVolume(developerOptions);
+                var developerParameters = DeveloperParameters.Parse(request.DeveloperParameters, request.Manifest);
+                var netappresponse = NetAppFactory.CreateVolume(developerParameters);
                 provisionResult = netappresponse.ToAddOnResult();
-                provisionResult.IsSuccess = true;
-                provisionResult.ConnectionData = developerOptions.VolumeToProvision.BuildConnectionString();
-                // well, it has to return the cifs or nfs share information. so, we'll need a method here.
+                // this appears to be wrong. we need to check what's coming back from the powershell script
+                //provisionResult.IsSuccess = true;
+                provisionResult.ConnectionData = developerParameters.VolumeToProvision.BuildConnectionString();
             }
             catch (Exception e)
             {
@@ -62,85 +55,33 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
         // Output: OperationResult
         public override OperationResult Test(AddonTestRequest request)
         {
-            var manifest = request.Manifest;
-            var developerOptions = request.DeveloperOptions;
-            var testResult = new OperationResult { IsSuccess = false };
-            var testProgress = "";
-
-            if (manifest.Properties != null && manifest.Properties.Any())
+            var testResult = new OperationResult {IsSuccess = false};
+            var apr = new AddonProvisionRequest
             {
-                DeveloperOptions devOptions;
+                DeveloperParameters = request.DeveloperParameters,
+                Manifest = request.Manifest
+            };
 
-                var parseOptionsResult = ParseDevOptions(developerOptions, out devOptions);
-                if (!parseOptionsResult.IsSuccess)
-                {
-                    return parseOptionsResult;
-                }
-                testProgress += parseOptionsResult.EndUserMessage;
-                try
-                {
-                    // load critical info from manifest to connect to netapp filer
-                    devOptions.LoadItemsFromManifest(request.Manifest);
-
-                    var apr = new AddonProvisionRequest
-                    {
-                        DeveloperOptions = request.DeveloperOptions,
-                        Manifest = request.Manifest
-                    };
-
-                    var dpr = new AddonDeprovisionRequest
-                    {
-                        DeveloperOptions = request.DeveloperOptions,
-                        Manifest = request.Manifest
-                    };
-                    var provisionTest = Provision(apr);
-                    if (!provisionTest.IsSuccess)
-                    {
-                        return provisionTest;
-                    }
-                    testProgress += provisionTest.EndUserMessage;
-                    var deprovisionTest = Deprovision(dpr);
-                    if (!deprovisionTest.IsSuccess)
-                    {
-                        return deprovisionTest;
-                    }
-                    testProgress += deprovisionTest.EndUserMessage;
-                    testResult.IsSuccess = true;
-                    testResult.EndUserMessage = testProgress;
-                }
-                catch (Exception e)
-                {
-                    testResult.EndUserMessage = e.Message;
-                }
-            }
-            else
+            var dpr = new AddonDeprovisionRequest
             {
-                testResult.EndUserMessage = "Missing required manifest properties (requireDevCredentials)";
+                DeveloperParameters = request.DeveloperParameters,
+                Manifest = request.Manifest
+            };
+            var provisionTest = Provision(apr);
+            if (!provisionTest.IsSuccess)
+            {
+                return provisionTest;
             }
-
+            var testProgress = provisionTest.EndUserMessage;
+            var deprovisionTest = Deprovision(dpr);
+            if (!deprovisionTest.IsSuccess)
+            {
+                return deprovisionTest;
+            }
+            testProgress += deprovisionTest.EndUserMessage;
+            testResult.IsSuccess = true;
+            testResult.EndUserMessage = testProgress;
             return testResult;
-        }
-
-        private static OperationResult ParseDevOptions(string developerOptions, out DeveloperOptions devOptions)
-        {
-            devOptions = null;
-            var result = new OperationResult { IsSuccess = false };
-            var progress = "";
-
-            try
-            {
-                progress += "Parsing developer options...\n";
-                devOptions = DeveloperOptions.Parse(developerOptions);
-            }
-            catch (ArgumentException e)
-            {
-                result.EndUserMessage = e.Message;
-                return result;
-            }
-
-            result.IsSuccess = true;
-            result.EndUserMessage = progress;
-            return result;
         }
     }
 }

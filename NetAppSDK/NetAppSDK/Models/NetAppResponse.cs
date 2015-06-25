@@ -3,13 +3,9 @@
     public class NetAppResponse
     {
         public bool IsSuccess { private get; set; }
-
         public int ReturnCode { private get; set; }
-
         public string ConnectionData { private get; set; }
-
         public string ConsoleOut { private get; set; }
-
         public string ErrorOut { private get; set; }
 
         public ProvisionAddOnResult ToAddOnResult()
@@ -39,7 +35,8 @@
         }
 
         public OperationResult ToOperationResult()
-        {// check addonresult return codes from
+        {
+// check addonresult return codes from
             // 1. create volume
             // 2. create snapmirror
             string endUserData;

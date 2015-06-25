@@ -1,8 +1,10 @@
 ﻿using System;
 using Apprenda.SaaSGrid.Addons;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing;
 using Apprenda.SaaSGrid.Addons.NetApp;
 using Apprenda.SaaSGrid.Addons.NetApp.Annotations;
+using Apprenda.SaaSGrid.Addons.NetApp.Models;
 
 namespace NetAppBatchTests
 {
@@ -39,16 +41,31 @@ namespace NetAppBatchTests
             AddonManifest.Properties.Add(new AddonProperty { Key = "snapvaultpolicyname", Value = "default" });
             AddonManifest.Properties.Add(new AddonProperty { Key = "snapmirrorpolicyname", Value = "default" });
             AddonManifest.Properties.Add(new AddonProperty { Key = "snaptype", Value = "ls"});
-            AddonManifest.Properties.Add(new AddonProperty { Key = "netappscriptrepo", Value="https://s3.amazonaws.com/apprenda.netapp.scripts/"});
+            AddonManifest.Properties.Add(new AddonProperty { Key = "maxallocatedstorage", Value="1G"});
+            AddonManifest.Properties.Add(new AddonProperty { Key = "scriptrepo", Value= "\\\\HQP-FILEDATA01\\Shares\\Product\\Integrations\\NetApp" });
             try
             {
                 var addon = new NetAppAddon();
                 var prequest = new AddonProvisionRequest
                 {
-                    DeveloperOptions = "name=netappdemoFullPathTest&size=20M",
+                    DeveloperParameters = new List<AddonParameter>
+                    {
+                        new AddonParameter()
+                        {
+                            Key = "name",
+                            Value = "netapp60tests"
+                        }, 
+                        new AddonParameter()
+                        {
+                            Key = "size",
+                            Value = "20M"
+                        }
+                    },
                     Manifest = AddonManifest
                 };
                 var result = addon.Provision(prequest);
+                Console.Out.Write(result.IsSuccess);
+                Console.Out.Write(result.EndUserMessage);
                 Console.Out.Write(result.ConnectionData);
 
             }

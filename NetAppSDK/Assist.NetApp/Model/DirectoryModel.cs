@@ -1,0 +1,3 @@
+﻿namespace Assist.NetApp.Model
+{
+}

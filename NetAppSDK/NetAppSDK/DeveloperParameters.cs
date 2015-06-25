@@ -1,62 +1,44 @@
-﻿using Apprenda.SaaSGrid.Addons.NetApp.Annotations;
+﻿using System;
+using System.Collections.Generic;
 using Apprenda.SaaSGrid.Addons.NetApp.Models;
-using System;
 
 namespace Apprenda.SaaSGrid.Addons.NetApp
 {
-    public class DeveloperOptions
+    public class DeveloperParameters
     {
-        private DeveloperOptions(Volume volumeToProvision)
+        private DeveloperParameters(Volume volumeToProvision)
         {
             VolumeToProvision = volumeToProvision;
         }
+
+        // type of script repository - local, server, cloudstorage
+        public string ScriptRepositoryType { get; private set; }
         // modularizing the script repository
-        public string NetappScriptRepo { get; set; }
-        
+        public string ScriptRepository { get; private set; }
         // these are used to connect to the NetApp Appliance
         public string VServer { get; private set; }
-
         public string ClusterMgtEndpoint { get; private set; }
-
         public string AdminUserName { get; private set; }
-
         // For Provisioning / Deprovisioning a NetApp Volume
-        public Volume VolumeToProvision { get; private set; }
-
-        public string VolumeAcl { get; set; }
-
+        public Volume VolumeToProvision { get; }
         public string AdminPassword { get; private set; }
-
+        public string MaxAllocatedStorage { get; set; }
         // handled on a policy-basis via the manifest
-        private string LifName { [UsedImplicitly] get; set; }
 
         // Method takes in a string and parses it into a DeveloperOptions class.
-        public static DeveloperOptions Parse(string developerOptions)
+        public static DeveloperParameters Parse(IEnumerable<AddonParameter> developerParameters, AddonManifest manifest)
         {
-            var options = new DeveloperOptions(new Volume());
-            if (string.IsNullOrWhiteSpace(developerOptions)) return options;
-            var optionPairs = developerOptions.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var optionPair in optionPairs)
+            var dParams = new DeveloperParameters(new Volume());
+            foreach (var param in developerParameters)
             {
-                var optionPairParts = optionPair.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
-                if (optionPairParts.Length == 2)
-                {
-                    MapToOption(options, optionPairParts[0].Trim().ToLowerInvariant(), optionPairParts[1].Trim());
-                }
-                else
-                {
-                    throw new ArgumentException(
-                        string.Format(
-                            "Unable to parse developer options which should be in the form of 'option=value&nextOption=nextValue'. The option '{0}' was not properly constructed",
-                            optionPair));
-                }
+                MapToOption(dParams, param.Key.Trim().ToLowerInvariant(), param.Value.Trim());
             }
-            // validate that we have the required parameters -- TODO (phase II)
-            return options;
+            dParams = LoadItemsFromManifest(dParams, manifest);
+            return dParams;
         }
 
         // Interior method takes in instance of DeveloperOptions (aptly named existingOptions) and maps them to the proper value. In essence, a setter method.
-        private static void MapToOption(DeveloperOptions requiredParams, string key, string value)
+        private static void MapToOption(DeveloperParameters requiredParams, string key, string value)
         {
             // Begin Required Parameters.
             // this is called only if the developer wishes to overwrite the platform operator's default aggregate
@@ -118,7 +100,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             if ("groupid".Equals(key))
             {
                 int tmp;
-                if (!(Int32.TryParse(value, out tmp)))
+                if (!(int.TryParse(value, out tmp)))
                 {
                     throw new ArgumentException("GroupId must be an integer value");
                 }
@@ -135,7 +117,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             if ("junctionactive".Equals(key))
             {
                 bool tmp;
-                if (!(Boolean.TryParse(value, out tmp)))
+                if (!(bool.TryParse(value, out tmp)))
                 {
                     throw new ArgumentException("JunctionActive must be a boolean type");
                 }
@@ -146,7 +128,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             if ("maxdirectorysize".Equals(key))
             {
                 double tmp;
-                if (!(Double.TryParse(value, out tmp)))
+                if (!(double.TryParse(value, out tmp)))
                 {
                     throw new ArgumentException("MaxDirectorySize must be a boolean type");
                 }
@@ -157,7 +139,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             if ("nvfailenabled".Equals(key))
             {
                 bool tmp;
-                if (!(Boolean.TryParse(value, out tmp)))
+                if (!(bool.TryParse(value, out tmp)))
                 {
                     throw new ArgumentException("NvFailEnabled must be a boolean type");
                 }
@@ -203,8 +185,8 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
 
             if ("userid".Equals(key))
             {
-                Int32 tmp;
-                if (!(Int32.TryParse(value, out tmp)))
+                int tmp;
+                if (!(int.TryParse(value, out tmp)))
                 {
                     throw new ArgumentException("MaxDirectorySize must be a boolean type");
                 }
@@ -215,7 +197,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             if ("vserverroot".Equals(key))
             {
                 bool tmp;
-                if (!(Boolean.TryParse(value, out tmp)))
+                if (!(bool.TryParse(value, out tmp)))
                 {
                     throw new ArgumentException("NvFailEnabled must be a boolean type");
                 }
@@ -225,8 +207,8 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
 
             if ("snapshotreserver".Equals(key))
             {
-                Int32 tmp;
-                if (!(Int32.TryParse(value, out tmp)))
+                int tmp;
+                if (!(int.TryParse(value, out tmp)))
                 {
                     throw new ArgumentException("MaxDirectorySize must be a boolean type");
                 }
@@ -236,8 +218,8 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
 
             if ("vmalignsector".Equals(key))
             {
-                Int32 tmp;
-                if (!(Int32.TryParse(value, out tmp)))
+                int tmp;
+                if (!(int.TryParse(value, out tmp)))
                 {
                     throw new ArgumentException("NvFailEnabled must be a boolean type");
                 }
@@ -268,10 +250,11 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 requiredParams.VolumeToProvision.Protocol = value;
             }
 
-            throw new ArgumentException(string.Format("The developer option '{0}' was not expected and is not understood.", key));
+            throw new ArgumentException(
+                string.Format("The developer option '{0}' was not expected and is not understood.", key));
         }
 
-        public void LoadItemsFromManifest(AddonManifest manifest)
+        public static DeveloperParameters LoadItemsFromManifest(DeveloperParameters parameters, AddonManifest manifest)
         {
             try
             {
@@ -281,90 +264,93 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                     switch (manifestProperty.Key.Trim().ToLowerInvariant())
                     {
                         case ("vserver"):
-                            VServer = manifestProperty.Value;
+                            parameters.VServer = manifestProperty.Value;
                             break;
 
                         case ("adminusername"):
-                            AdminUserName = manifestProperty.Value;
+                            parameters.AdminUserName = manifestProperty.Value;
                             break;
 
                         case ("adminpassword"):
-                            AdminPassword = manifestProperty.Value;
+                            parameters.AdminPassword = manifestProperty.Value;
                             break;
 
                         case ("clustermgtendpoint"):
-                            ClusterMgtEndpoint = manifestProperty.Value;
+                            parameters.ClusterMgtEndpoint = manifestProperty.Value;
                             break;
 
                         case ("defaultprotocol"):
-                            VolumeToProvision.Protocol = manifestProperty.Value;
+                            parameters.VolumeToProvision.Protocol = manifestProperty.Value;
                             break;
 
                         case ("defaultaggregate"):
-                            VolumeToProvision.AggregateName = manifestProperty.Value;
+                            parameters.VolumeToProvision.AggregateName = manifestProperty.Value;
                             break;
 
                         case ("defaultrootpath"):
-                            VolumeToProvision.JunctionPath = manifestProperty.Value;
+                            parameters.VolumeToProvision.JunctionPath = manifestProperty.Value;
                             break;
 
                         case ("snapenable"):
                             bool test;
                             bool.TryParse(manifestProperty.Value, out test);
-                            VolumeToProvision.SnapEnable = test;
+                            parameters.VolumeToProvision.SnapEnable = test;
                             break;
 
                         case ("snapshotschedule"):
-                            VolumeToProvision.SnapshotSchedule = manifestProperty.Value;
+                            parameters.VolumeToProvision.SnapshotSchedule = manifestProperty.Value;
                             break;
 
                         case ("defaultacl"):
-                            VolumeAcl = manifestProperty.Value;
                             break;
 
                         case ("snapmirrorpolicyname"):
-                            VolumeToProvision.SnapMirrorPolicyName = manifestProperty.Value;
+                            parameters.VolumeToProvision.SnapMirrorPolicyName = manifestProperty.Value;
                             break;
 
                         case ("snapvaultpolicyname"):
-                            VolumeToProvision.SnapVaultPolicyName = manifestProperty.Value;
+                            parameters.VolumeToProvision.SnapVaultPolicyName = manifestProperty.Value;
                             break;
 
                         case ("snapmirrorschedule"):
-                            VolumeToProvision.SnapMirrorSchedule = manifestProperty.Value;
+                            parameters.VolumeToProvision.SnapMirrorSchedule = manifestProperty.Value;
                             break;
 
                         case ("snapvaultschedule"):
-                            VolumeToProvision.SnapVaultSchedule = manifestProperty.Value;
+                            parameters.VolumeToProvision.SnapVaultSchedule = manifestProperty.Value;
                             break;
 
                         case ("snaptype"):
-                            VolumeToProvision.SnapType = manifestProperty.Value;
+                            parameters.VolumeToProvision.SnapType = manifestProperty.Value;
                             break;
 
                         case ("shareendpoint"):
-                            VolumeToProvision.CIFSRootServer = manifestProperty.Value;
+                            parameters.VolumeToProvision.CifsRootServer = manifestProperty.Value;
                             break;
 
-                        case ("netappscriptrepo"):
-                            NetappScriptRepo = manifestProperty.Value;
+                        case ("scriptrepotype"):
+                            parameters.ScriptRepositoryType = manifestProperty.Value;
                             break;
 
-                        // don't worry about this for now
-                        //case ("destinationVServer"):
+                        case ("scriptrepo"):
+                            parameters.ScriptRepository = manifestProperty.Value;
+                            break;
+
+                        case ("maxallocatedstorage"):
+                            parameters.MaxAllocatedStorage = manifestProperty.Value;
+                            break;
 
                         default: // means there are other manifest properties we don't need.
-                            Console.WriteLine("Parse failed on key: " + manifestProperty.DisplayName);
+                            Console.WriteLine("Parse failed on key: " + manifestProperty.Key);
                             break;
                     }
                 }
+                return parameters;
             }
             catch (Exception e)
             {
                 throw new Exception(e.Message + "\n Debug information: " + manifest.GetProperties());
             }
         }
-
-        
     }
 }
