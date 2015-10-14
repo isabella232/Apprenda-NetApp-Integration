@@ -50,7 +50,12 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                     // -------------------------------------------------------------------------------------------/
 
                     // case 1, 2: local or server
-                    const string executingPs1File = ".\\CreateVolume.ps1";
+                    const string executingPs1File = "C:\\CreateVolume.ps1";
+                    psInstance.AddCommand("Import-Module");
+                    //psInstance.AddParameter("-name", "DataOnTAP");
+                    psInstance.AddArgument("C:\\Program Files (x86)\\NetApp\\NetApp PowerShell Toolkit\\Modules\\DataONTAP");
+                    psInstance.Invoke();
+                    /*
                     var remotePs1File = d.ScriptRepository + "\\CreateVolume.ps1";
                     psInstance.AddCommand("Copy-Item");
                     psInstance.AddParameter("-Path", remotePs1File);
@@ -73,7 +78,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                             ReturnCode = -1
                         };
                     }
-
+                    */
                     // -------------------------------------------------------------------------------------------/
                     // STEP 3: Execute the script!
                     // -------------------------------------------------------------------------------------------/

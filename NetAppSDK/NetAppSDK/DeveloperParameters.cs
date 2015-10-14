@@ -20,7 +20,7 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
         public string ClusterMgtEndpoint { get; private set; }
         public string AdminUserName { get; private set; }
         // For Provisioning / Deprovisioning a NetApp Volume
-        public Volume VolumeToProvision { get; }
+        public Volume VolumeToProvision { get; private set; }
         public string AdminPassword { get; private set; }
         public string MaxAllocatedStorage { get; set; }
         // handled on a policy-basis via the manifest
@@ -292,9 +292,15 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                             break;
 
                         case ("snapenable"):
+                            bool snaptest;
+                            bool.TryParse(manifestProperty.Value, out snaptest);
+                            parameters.VolumeToProvision.SnapEnable = snaptest;
+                            break;
+
+                        case ("vaultenable"):
                             bool test;
                             bool.TryParse(manifestProperty.Value, out test);
-                            parameters.VolumeToProvision.SnapEnable = test;
+                            parameters.VolumeToProvision.VaultEnable = test;
                             break;
 
                         case ("snapshotschedule"):
