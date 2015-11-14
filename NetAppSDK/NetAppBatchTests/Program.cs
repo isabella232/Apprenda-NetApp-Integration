@@ -1,10 +1,8 @@
 ﻿using System;
 using Apprenda.SaaSGrid.Addons;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing;
 using Apprenda.SaaSGrid.Addons.NetApp;
 using Apprenda.SaaSGrid.Addons.NetApp.Annotations;
-using Apprenda.SaaSGrid.Addons.NetApp.Models;
 
 namespace NetAppBatchTests
 {
@@ -26,12 +24,12 @@ namespace NetAppBatchTests
 
         public static void Main([NotNull] string[] args)
         {
-            AddonManifest.Properties.Add(new AddonProperty{Key="clustermgtendpoint", Value="192.168.127.20"});
+            AddonManifest.Properties.Add(new AddonProperty{Key="clustermgtendpoint", Value="10.5.4.47"});
             AddonManifest.Properties.Add(new AddonProperty{Key="shareendpoint", Value=""});
             AddonManifest.Properties.Add(new AddonProperty { Key = "adminusername", Value = "admin" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "adminpassword", Value = "Meepster23!" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "vserver", Value = "apprendasvm" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "defaultprotocol", Value = "NFS" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "adminpassword", Value = "Apprenda2015!" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "vserver", Value = "apprendaSVM" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "defaultprotocol", Value = "None" });
             AddonManifest.Properties.Add(new AddonProperty { Key = "defaultaggregate", Value = "aggr1" });
             AddonManifest.Properties.Add(new AddonProperty { Key = "defaultRootPath", Value = "/vol" });
             AddonManifest.Properties.Add(new AddonProperty { Key = "snapenable", Value = "false" });
@@ -42,7 +40,7 @@ namespace NetAppBatchTests
             AddonManifest.Properties.Add(new AddonProperty { Key = "snapmirrorpolicyname", Value = "default" });
             AddonManifest.Properties.Add(new AddonProperty { Key = "snaptype", Value = "ls"});
             AddonManifest.Properties.Add(new AddonProperty { Key = "maxallocatedstorage", Value="1G"});
-            AddonManifest.Properties.Add(new AddonProperty { Key = "scriptrepo", Value= "\\\\HQP-FILEDATA01\\Shares\\Product\\Integrations\\NetApp\\ExampleScripts" });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "scriptrepo", Value= "" });
             try
             {
                 var addon = new NetAppAddon();

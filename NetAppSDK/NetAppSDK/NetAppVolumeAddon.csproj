@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="NetAppAddon.cs" />
     <Compile Include="DeveloperParameters.cs" />
     <Compile Include="Models\NetAppResponse.cs" />
@@ -69,6 +70,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="CreateVolume.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="DeleteVolume.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
