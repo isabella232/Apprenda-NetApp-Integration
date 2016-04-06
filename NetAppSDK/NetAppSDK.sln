@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppVolumeAddon", "NetAppVolumeAddon\NetAppVolumeAddon.csproj", "{62B02595-CCEC-45E8-A4D5-CE6FABEC17A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppBatchTests", "NetAppBatchTests\NetAppBatchTests.csproj", "{772D4A6C-76E7-4DDD-BAF7-C9FA378C51D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppBatchTests", "NetApp.Tests\NetApp.Tests.csproj", "{772D4A6C-76E7-4DDD-BAF7-C9FA378C51D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
