@@ -323,7 +323,6 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
             }
         }
 
-        // Presumption - developers have knowledge regarding order of magnitude. this doesn't cover inappropriate requests such as 5000MB, 25000GB, etc.
         /// <summary>
         /// The check if storage request is compliant.
         /// </summary>
@@ -377,36 +376,16 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 //   Anything else is custom or Phase II at this time.
                 // -------------------------------------------------------------------------------------------/
 
-                // case 1, 2: local or server
-                const string executingPs1File = ".\\DeleteVolume.ps1";
+                const string ExecutingPs1File = ".\\DeleteVolume.ps1";
                 var remotePs1File = d.ScriptRepository + "\\DeleteVolume.ps1";
-                psInstance.AddCommand("Copy-Item");
-                psInstance.AddParameter("-Path", remotePs1File);
-                psInstance.AddParameter("-Destination", executingPs1File);
-                psInstance.AddParameter("-Force");
-                psInstance.Invoke();
-                debugStream += psInstance.Streams.Debug.Aggregate(debugStream, (current, debug) => current + debug);
-                debugStream += psInstance.Streams.Progress.Aggregate(debugStream,
-                    (current, debug) => current + debug);
-                if (psInstance.Streams.Error.Count > 0)
+
+                if (!File.Exists(ExecutingPs1File))
                 {
-                    errorStream += psInstance.Streams.Error.Aggregate(errorStream, (current, error) => current + error);
-                    return new NetAppResponse
-                    {
-                        IsSuccess = false,
-                        ErrorOut = errorStream,
-                        ConnectionData = string.Empty,
-                        ConsoleOut = "Could not copy file to execute. Please check connectivity to the server.",
-                        ReturnCode = -1
-                    };
+                    File.WriteAllText(ExecutingPs1File, Constants.CreateVolume);
                 }
 
-                // Step 3 - let's remove the volume.
-                // So normally the only change here from our existing provisioning process is that we need to pull the volume name from the
-                // connection string. so, let's extract it.
-
                 var volumeToDelete = ExtractFromConnectionString(connectionData);
-                psInstance.AddCommand(executingPs1File);
+                psInstance.AddCommand(ExecutingPs1File);
                 psInstance.AddParameter("-username", d.AdminUserName);
                 psInstance.AddParameter("-password", d.AdminPassword);
                 psInstance.AddParameter("-vserver", d.VServer);
@@ -428,11 +407,10 @@ namespace Apprenda.SaaSGrid.Addons.NetApp
                 errorStream += psInstance.Streams.Error.Aggregate(errorStream, (current, error) => current + error);
                 return new NetAppResponse
                 {
-                    IsSuccess = false,
+                    IsSuccess = true,
                     ErrorOut = errorStream,
                     ConnectionData = string.Empty,
-                    ConsoleOut = "Could not copy file to execute. Please check connectivity to the server.",
-                    ReturnCode = -1
+                    ConsoleOut = "Please confirm removal of the addon. It has been disconnected from any applications.",
                 };
             }
         }
