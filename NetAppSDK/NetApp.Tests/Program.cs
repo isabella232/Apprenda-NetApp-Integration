@@ -3,6 +3,7 @@ using Apprenda.SaaSGrid.Addons;
 using System.Collections.Generic;
 using Apprenda.SaaSGrid.Addons.NetApp;
 using Apprenda.SaaSGrid.Addons.NetApp.Annotations;
+using System.Configuration;
 
 namespace NetAppBatchTests
 {
@@ -12,11 +13,11 @@ namespace NetAppBatchTests
         private static readonly AddonManifest AddonManifest = new AddonManifest
         {
             Author = "Chris Dutra",
-            ProvisioningUsername = "chris@dutronlabs.com",
-            ProvisioningPassword = "cyrixm2r",
-            ProvisioningLocation = "Apprenda-NYC",
+            ProvisioningUsername = "",
+            ProvisioningPassword = "",
+            ProvisioningLocation = "",
             IsEnabled = true,
-            Version = "2.0",
+            Version = "1.2",
             Vendor = "Apprenda",
             Name = "NetApp",
             Properties = new List<AddonProperty>()
@@ -24,23 +25,23 @@ namespace NetAppBatchTests
 
         public static void Main([NotNull] string[] args)
         {
-            AddonManifest.Properties.Add(new AddonProperty{Key="clustermgtendpoint", Value="10.5.4.47"});
-            AddonManifest.Properties.Add(new AddonProperty{Key="shareendpoint", Value=""});
-            AddonManifest.Properties.Add(new AddonProperty { Key = "adminusername", Value = "admin" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "adminpassword", Value = "Apprenda2015!" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "vserver", Value = "apprendaSVM" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "defaultprotocol", Value = "None" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "defaultaggregate", Value = "aggr1" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "defaultRootPath", Value = "/vol" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "snapenable", Value = "false" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "vaultenable", Value = "false" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "snapvaultschedule", Value = "weekly" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "snapmirrorschedule", Value = "hourly" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "snapvaultpolicyname", Value = "default" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "snapmirrorpolicyname", Value = "default" });
-            AddonManifest.Properties.Add(new AddonProperty { Key = "snaptype", Value = "ls"});
-            AddonManifest.Properties.Add(new AddonProperty { Key = "maxallocatedstorage", Value="1G"});
-            AddonManifest.Properties.Add(new AddonProperty { Key = "scriptrepo", Value= "" });
+            AddonManifest.Properties.Add(new AddonProperty{Key="clustermgtendpoint", Value=ConfigurationManager.AppSettings["ClusterMgtEndpoint"]});
+            AddonManifest.Properties.Add(new AddonProperty { Key = "shareendpoint", Value = ConfigurationManager.AppSettings["ShareEndpoint"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "adminusername", Value = ConfigurationManager.AppSettings["AdminUsername"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "adminpassword", Value = ConfigurationManager.AppSettings["AdminPassword"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "vserver", Value = ConfigurationManager.AppSettings["VServer"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "defaultprotocol", Value = ConfigurationManager.AppSettings["DefaultProtocol"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "defaultaggregate", Value = ConfigurationManager.AppSettings["DefaultAggregate"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "defaultRootPath", Value = ConfigurationManager.AppSettings["DefaultRootPath"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snapenable", Value = ConfigurationManager.AppSettings["SnapEnable"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "vaultenable", Value = ConfigurationManager.AppSettings["VaultEnable"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snapvaultschedule", Value = ConfigurationManager.AppSettings["SnapVaultSchedule"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snapmirrorschedule", Value = ConfigurationManager.AppSettings["SnapMirrorSchedule"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snapvaultpolicyname", Value = ConfigurationManager.AppSettings["SnapVaultPolicyName"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snapmirrorpolicyname", Value = ConfigurationManager.AppSettings["SnapMirrorPolicyName"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "snaptype", Value = ConfigurationManager.AppSettings["SnapType"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "maxallocatedstorage", Value = ConfigurationManager.AppSettings["MaxAllocatedStorage"] });
+            AddonManifest.Properties.Add(new AddonProperty { Key = "scriptrepo", Value = ConfigurationManager.AppSettings["ScriptRepo"] });
             try
             {
                 var addon = new NetAppAddon();
@@ -51,12 +52,12 @@ namespace NetAppBatchTests
                         new AddonParameter()
                         {
                             Key = "name",
-                            Value = "netapp60tests"
+                            Value = ConfigurationManager.AppSettings["VolumeName"]
                         }, 
                         new AddonParameter()
                         {
                             Key = "size",
-                            Value = "20M"
+                            Value = ConfigurationManager.AppSettings["Size"]
                         }
                     },
                     Manifest = AddonManifest
