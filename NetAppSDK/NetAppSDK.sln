@@ -1,11 +1,10 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppVolumeAddon", "NetAppVolumeAddon\NetAppVolumeAddon.csproj", "{62B02595-CCEC-45E8-A4D5-CE6FABEC17A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetAppBatchTests", "NetApp.Tests\NetApp.Tests.csproj", "{772D4A6C-76E7-4DDD-BAF7-C9FA378C51D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetApp.Tests", "NetApp.Tests\NetApp.Tests.csproj", "{772D4A6C-76E7-4DDD-BAF7-C9FA378C51D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,22 +20,6 @@ Global
 		{772D4A6C-76E7-4DDD-BAF7-C9FA378C51D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{772D4A6C-76E7-4DDD-BAF7-C9FA378C51D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{772D4A6C-76E7-4DDD-BAF7-C9FA378C51D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5048F30-FF29-40C5-8067-CE698217A8DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5048F30-FF29-40C5-8067-CE698217A8DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5048F30-FF29-40C5-8067-CE698217A8DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5048F30-FF29-40C5-8067-CE698217A8DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{06711F16-0F73-4416-A0D0-C8DB5A832E1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06711F16-0F73-4416-A0D0-C8DB5A832E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{06711F16-0F73-4416-A0D0-C8DB5A832E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{06711F16-0F73-4416-A0D0-C8DB5A832E1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C7B05DCC-2031-4452-89F5-3E92A3872A42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C7B05DCC-2031-4452-89F5-3E92A3872A42}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C7B05DCC-2031-4452-89F5-3E92A3872A42}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7B05DCC-2031-4452-89F5-3E92A3872A42}.Release|Any CPU.Build.0 = Release|Any CPU
-		{46A76131-6B9E-45F3-B73F-C4BA1507245F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46A76131-6B9E-45F3-B73F-C4BA1507245F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46A76131-6B9E-45F3-B73F-C4BA1507245F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46A76131-6B9E-45F3-B73F-C4BA1507245F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

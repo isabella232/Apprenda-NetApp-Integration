@@ -62,7 +62,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NetAppSDK\NetAppVolumeAddon.csproj">
+    <ProjectReference Include="..\NetAppVolumeAddon\NetAppVolumeAddon.csproj">
       <Project>{62b02595-ccec-45e8-a4d5-ce6fabec17a0}</Project>
       <Name>NetAppVolumeAddon</Name>
     </ProjectReference>
