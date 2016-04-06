@@ -42,6 +42,8 @@
         internal string Language { get; set; }
         internal string UnixPermissions { get; set; }
         internal string CifsRootServer { private get; set; }
+        internal bool VaultEnable { get; set; }
+
         // the idea here is to optimize. if the parameters aren't default or null, add them.
 
         internal string BuildConnectionString()
