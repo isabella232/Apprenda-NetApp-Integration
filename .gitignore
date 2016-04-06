@@ -32,7 +32,7 @@ TestResult.xml
 # Build Results of an ATL Project
 [Dd]ebugPS/
 [Rr]eleasePS/
-dlldata.c
+data.c
 
 *_i.c
 *_p.c
@@ -129,14 +129,6 @@ publish/
 # but database connection strings (with potential passwords) will be unencrypted
 *.pubxml
 *.publishproj
-
-# NuGet Packages
-*.nupkg
-
-# except build/, which is used as an MSBuild target.
-!**/packages/build/
-# If using the old MSBuild-Integrated Package Restore, uncomment this:
-#!**/packages/repositories.config
 
 # Windows Azure Build Output
 csx/
